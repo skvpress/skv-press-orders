@@ -777,9 +777,13 @@ function calculateTotal() {
   const itemRows = document.querySelectorAll(".item-row");
   let total = 0;
   itemRows.forEach(row => {
-    const amountInput = row.querySelector('input[type="number"]:nth-of-type(2)');
-    const amount = amountInput && amountInput.value ? parseFloat(amountInput.value) : 0;
-    total += amount;
+    const inputs = row.querySelectorAll('input');
+    // Get the 3rd input (0-indexed: 0=product, 1=qty, 2=amount)
+    if (inputs.length >= 3) {
+      const amountInput = inputs[2];
+      const amount = amountInput && amountInput.value ? parseFloat(amountInput.value) : 0;
+      total += amount;
+    }
   });
   document.getElementById("totalAmount").innerText = total.toFixed(2);
 }
