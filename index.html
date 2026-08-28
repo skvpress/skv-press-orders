@@ -19,6 +19,100 @@
       font-family: Arial, sans-serif;
       background: #f4f6f8;
       color: #222;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* =========================
+       SIDEBAR NAVIGATION
+    ========================= */
+
+    #sidebar {
+      width: 250px;
+      background: #1f2937;
+      color: white;
+      padding: 20px 0;
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+
+    .sidebar-brand {
+      padding: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      border-bottom: 1px solid #374151;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+    }
+
+    .sidebar-menu li {
+      margin: 0;
+    }
+
+    .sidebar-menu button {
+      width: 100%;
+      background: none;
+      border: none;
+      color: white;
+      padding: 14px 20px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      border-left: 4px solid transparent;
+    }
+
+    .sidebar-menu button:hover {
+      background: #374151;
+      border-left-color: #2563eb;
+    }
+
+    .sidebar-menu button.active {
+      background: #2563eb;
+      border-left-color: #fff;
+    }
+
+    .sidebar-bottom {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      border-top: 1px solid #374151;
+      padding-top: 10px;
+    }
+
+    .sidebar-bottom button {
+      width: 100%;
+      background: none;
+      border: none;
+      color: white;
+      padding: 14px 20px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-bottom button:hover {
+      background: #374151;
+    }
+
+    /* =========================
+       MAIN LAYOUT
+    ========================= */
+
+    .main-wrapper {
+      flex: 1;
+      margin-left: 250px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     header {
@@ -35,9 +129,20 @@
       font-size: 22px;
     }
 
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
     .container {
-      max-width: 1200px;
-      margin: auto;
+      flex: 1;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
       padding: 20px;
     }
 
@@ -236,6 +341,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 14px;
+      margin-bottom: 20px;
     }
 
     .dashboard-card {
@@ -247,6 +353,18 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dashboard-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      transform: translateY(-2px);
+    }
+
+    .dashboard-card.filtered {
+      border-left-color: #10b981;
+      background: #f0fdf4;
     }
 
     .dashboard-card-icon {
@@ -266,6 +384,27 @@
       font-weight: bold;
       color: #111;
       line-height: 1;
+    }
+
+    .filter-info {
+      background: #e0f2fe;
+      border-left: 4px solid #0ea5e9;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .filter-info-text {
+      font-size: 14px;
+      color: #0369a1;
+    }
+
+    .filter-info button {
+      padding: 6px 12px;
+      font-size: 13px;
     }
 
     .card {
@@ -361,7 +500,67 @@
       border-bottom: none;
     }
 
-    @media (max-width: 700px) {
+    .view-section {
+      display: none;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    /* =========================
+       MOBILE RESPONSIVE
+    ========================= */
+
+    @media (max-width: 1024px) {
+      #sidebar {
+        width: 220px;
+      }
+
+      .main-wrapper {
+        margin-left: 220px;
+      }
+
+      .container {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      #sidebar {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        top: 0;
+        left: -250px;
+        max-height: 100vh;
+        overflow-y: auto;
+        transition: left 0.3s ease;
+        z-index: 999;
+      }
+
+      #sidebar.open {
+        left: 0;
+      }
+
+      .sidebar-bottom {
+        position: relative;
+        border-top: 1px solid #374151;
+        margin-top: 10px;
+      }
+
+      .main-wrapper {
+        margin-left: 0;
+        margin-top: 0;
+      }
+
+      .hamburger-btn {
+        display: block;
+      }
 
       header {
         padding: 14px;
@@ -369,6 +568,7 @@
 
       header h1 {
         font-size: 18px;
+        flex: 1;
       }
 
       header button {
@@ -428,1647 +628,953 @@
         padding: 10px;
         font-size: 14px;
       }
-    }
-    /* =========================
-   MOBILE RESPONSIVE
-========================= */
 
-@media (max-width: 600px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
+      }
 
-    body {
-        padding: 0;
-    }
+      .dashboard-card {
+        padding: 12px;
+      }
 
-    header {
-        padding: 14px 12px;
-    }
-
-    header h1 {
-        font-size: 20px;
+      .dashboard-card-count {
+        font-size: 24px;
+      }
     }
 
-    .container {
+    @media (max-width: 600px) {
+      #sidebar {
+        left: -250px;
+        width: 250px;
+      }
+
+      .container {
         width: 100%;
         padding: 12px;
-    }
+      }
 
-    .card {
+      .card {
         padding: 14px;
         border-radius: 12px;
-    }
+      }
 
-    /* Party + Date */
-    .top-row {
+      .top-row {
         grid-template-columns: 1fr !important;
         gap: 12px;
-    }
+      }
 
-    /* Product Row */
-.item-row {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr auto !important;
-    gap: 8px;
-}
-
-.item-row input:first-child {
-    grid-column: 1 / -1;
-}
-
-/* Remove button */
-
-.delete-btn {
-    grid-column: auto !important;
-    width: 44px !important;
-    min-width: 44px;
-    height: 44px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-}
-
-    /* Buttons */
-    .actions {
-        flex-direction: column;
+      .item-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr auto !important;
         gap: 8px;
-    }
+      }
 
-    .actions button {
+      .item-row input:first-child {
+        grid-column: 1 / -1;
+      }
+
+      .delete-btn {
+        grid-column: 1 / -1;
         width: 100%;
+      }
+
+      .row-actions {
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .row-actions button {
+        width: 100%;
+        padding: 8px 12px;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .dashboard-card {
+        padding: 12px;
+      }
+
+      .dashboard-card-title {
+        font-size: 11px;
+      }
+
+      .dashboard-card-count {
+        font-size: 20px;
+      }
+
+      .kanban-column {
+        min-width: 240px;
+        max-width: 240px;
+      }
+
+      .filter-info {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .filter-info button {
+        width: 100%;
+      }
     }
-
-    /* Orders Table */
-.orders-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-table {
-    width: 100%;
-    min-width: 700px;
-}
-
-/* Orders: table on desktop, cards on mobile */
-.table-wrapper {
-    display: none;
-}
-
-.orders-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.order-card {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 14px;
-}
-
-.order-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.order-card-date {
-    font-size: 13px;
-    color: #6b7280;
-    font-weight: bold;
-}
-
-.order-card-party {
-    font-size: 16px;
-    font-weight: bold;
-    color: #111;
-}
-
-.order-card-item {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 8px;
-    padding: 6px 0;
-    border-bottom: 1px dashed #e5e7eb;
-    font-size: 14px;
-}
-
-.order-card-item:last-child {
-    border-bottom: none;
-}
-
-.order-card-item .product {
-    font-weight: bold;
-    color: #111;
-}
-
-.order-card-item .qty {
-    color: #6b7280;
-}
-
-.order-card-item .amount {
-    color: #2563eb;
-    font-weight: bold;
-    text-align: right;
-}
-
-/* Kanban mobile */
-.kanban-board {
-    gap: 10px;
-    scroll-snap-type: x mandatory;
-}
-
-.kanban-column {
-    min-width: 82vw;
-    max-width: 82vw;
-    max-height: 65vh;
-    scroll-snap-align: start;
-}
-
-.view-toggle button {
-    flex: 1;
-}
-
-/* Dashboard mobile */
-.dashboard-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-
-.dashboard-card {
-    padding: 12px;
-}
-
-.dashboard-card-count {
-    font-size: 26px;
-}
-}
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1>SKV Press Orders</h1>
-
-  <button class="primary" onclick="showOrderForm()">
-    + New Order
-  </button>
-</header>
-
-
-<div class="container">
-
-  <!-- DASHBOARD SUMMARY -->
-
-  <div class="card">
-
-    <div class="top-bar">
-      <h2>Dashboard</h2>
+  <!-- SIDEBAR NAVIGATION -->
+  <aside id="sidebar">
+    <div class="sidebar-brand">
+      📱 SKV Press Orders
     </div>
+    <ul class="sidebar-menu">
+      <li><button class="nav-btn active" onclick="navigateTo('dashboard')">📊 Dashboard</button></li>
+      <li><button class="nav-btn" onclick="navigateTo('neworder')">➕ New Order</button></li>
+      <li><button class="nav-btn" onclick="navigateTo('listview')">📋 List View</button></li>
+      <li><button class="nav-btn" onclick="navigateTo('pipeline')">🎯 Pipeline</button></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <button onclick="alert('Settings coming soon!')">⚙️ Settings</button>
+    </div>
+  </aside>
 
-    <div class="dashboard-grid" id="dashboardGrid">
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
 
-      <div class="dashboard-card" style="border-left-color:#2563eb;">
-        <div class="dashboard-card-icon">🆕</div>
-        <div class="dashboard-card-title">New Orders</div>
-        <div class="dashboard-card-count" id="dashNewEnquiry">0</div>
-      </div>
+    <!-- HEADER -->
+    <header>
+      <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+      <h1 id="pageTitle">Dashboard</h1>
+      <button class="primary" onclick="navigateTo('neworder')">+ New Order</button>
+    </header>
 
-      <div class="dashboard-card" style="border-left-color:#8b5cf6;">
-        <div class="dashboard-card-icon">🎨</div>
-        <div class="dashboard-card-title">Design Pending</div>
-        <div class="dashboard-card-count" id="dashDesignPending">0</div>
-      </div>
+    <!-- CONTAINER -->
+    <div class="container">
 
-      <div class="dashboard-card" style="border-left-color:#f59e0b;">
-        <div class="dashboard-card-icon">⏳</div>
-        <div class="dashboard-card-title">Waiting for Approval</div>
-        <div class="dashboard-card-count" id="dashApprovalPending">0</div>
-      </div>
+      <!-- DASHBOARD SECTION -->
+      <section id="dashboard" class="view-section active">
+        <div class="top-bar">
+          <h2>Dashboard Summary</h2>
+          <button class="secondary" onclick="loadOrders()">🔄 Refresh</button>
+        </div>
 
-      <div class="dashboard-card" style="border-left-color:#0ea5e9;">
-        <div class="dashboard-card-icon">🖨️</div>
-        <div class="dashboard-card-title">Printing Jobs</div>
-        <div class="dashboard-card-count" id="dashPrintingJobs">0</div>
-      </div>
+        <div id="filterInfo" class="filter-info" style="display: none;">
+          <span class="filter-info-text" id="filterText"></span>
+          <button class="secondary" onclick="clearFilter()">Clear Filter</button>
+        </div>
 
-      <div class="dashboard-card" style="border-left-color:#14b8a6;">
-        <div class="dashboard-card-icon">✂️</div>
-        <div class="dashboard-card-title">Finishing Jobs</div>
-        <div class="dashboard-card-count" id="dashFinishingJobs">0</div>
-      </div>
+        <div id="dashboardSummary" class="dashboard-grid"></div>
+      </section>
 
-      <div class="dashboard-card" style="border-left-color:#f97316;">
-        <div class="dashboard-card-icon">📦</div>
-        <div class="dashboard-card-title">Ready for Delivery</div>
-        <div class="dashboard-card-count" id="dashReadyDelivery">0</div>
-      </div>
+      <!-- NEW ORDER SECTION -->
+      <section id="neworder" class="view-section">
+        <div class="card">
+          <h2 id="formTitle">New Order</h2>
 
-      <div class="dashboard-card" style="border-left-color:#22c55e;">
-        <div class="dashboard-card-icon">🚚</div>
-        <div class="dashboard-card-title">Completed Orders</div>
-        <div class="dashboard-card-count" id="dashCompleted">0</div>
-      </div>
+          <div class="form-grid">
+            <div>
+              <label for="partyName">Party Name</label>
+              <input type="text" id="partyName" placeholder="Enter party name" />
+            </div>
+            <div>
+              <label for="orderDate">Order Date</label>
+              <input type="date" id="orderDate" />
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <h3>Order Items</h3>
+            <div class="items-header">
+              <span>Product Details</span>
+              <span>Quantity</span>
+              <span>Amount (₹)</span>
+              <span></span>
+            </div>
+            <div id="itemsContainer"></div>
+
+            <button class="secondary" onclick="addItem()" style="margin-top: 10px;">+ Add Item</button>
+          </div>
+
+          <div class="total">
+            Total: ₹<span id="totalAmount">0.00</span>
+          </div>
+
+          <div class="actions">
+            <button class="secondary" onclick="clearForm()">Cancel</button>
+            <button class="primary" id="saveOrderBtn" onclick="saveOrder()">Save Order</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIST VIEW SECTION -->
+      <section id="listview" class="view-section">
+        <div class="top-bar">
+          <h2>All Orders</h2>
+          <div style="display: flex; gap: 10px;">
+            <button class="secondary" onclick="loadOrders()">🔄 Refresh</button>
+            <button class="secondary" onclick="toggleTableView()">📱 Toggle View</button>
+          </div>
+        </div>
+
+        <div id="filterInfo2" class="filter-info" style="display: none;">
+          <span class="filter-info-text" id="filterText2"></span>
+          <button class="secondary" onclick="clearFilter()">Clear Filter</button>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="ordersTable">
+            <thead>
+              <tr>
+                <th>Party Name</th>
+                <th>Order Date</th>
+                <th>Status</th>
+                <th>Products</th>
+                <th>Total (₹)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody"></tbody>
+          </table>
+        </div>
+
+        <div id="ordersCardsContainer" class="orders-cards"></div>
+      </section>
+
+      <!-- PIPELINE SECTION -->
+      <section id="pipeline" class="view-section">
+        <div class="top-bar">
+          <h2>Pipeline</h2>
+          <div style="display: flex; gap: 10px;">
+            <button class="secondary" onclick="loadOrders()">🔄 Refresh</button>
+          </div>
+        </div>
+
+        <div id="filterInfo3" class="filter-info" style="display: none;">
+          <span class="filter-info-text" id="filterText3"></span>
+          <button class="secondary" onclick="clearFilter()">Clear Filter</button>
+        </div>
+
+        <div id="kanbanBoard" class="kanban-board"></div>
+      </section>
 
     </div>
-
   </div>
 
-
-  <!-- NEW ORDER FORM -->
-
-  <div id="orderForm" class="card">
-
-    <div class="top-bar">
-      <h2 id="formTitle">New Order</h2>
-    </div>
-
-
-    <div class="form-grid">
-
-      <div>
-        <label>Party Name</label>
-
-        <input
-          type="text"
-          id="partyName"
-          placeholder="Enter party name"
-        />
-      </div>
-
-
-      <div>
-        <label>Order Date</label>
-
-        <input
-          type="date"
-          id="orderDate"
-        />
-      </div>
-
-    </div>
-
-
-    <br>
-
-
-    <h3>Order Items</h3>
-
-
-    <div class="items-header">
-      <div>Product Details</div>
-      <div>Quantity</div>
-      <div>Amount</div>
-      <div></div>
-    </div>
-
-
-    <div id="itemsContainer"></div>
-
-
-    <br>
-
-
-    <button
-      type="button"
-      class="secondary"
-      onclick="addItem()"
-    >
-      + Add Item
-    </button>
-
-
-    <div class="total">
-      Total: ₹ <span id="totalAmount">0.00</span>
-    </div>
-
-
-    <div class="actions">
-
-      <button
-        type="button"
-        class="secondary"
-        onclick="clearForm()"
-      >
-        Cancel
-      </button>
-
-
-      <button
-        type="button"
-        class="primary"
-        id="saveOrderBtn"
-        onclick="saveOrder()"
-      >
-        Save Order
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- ORDERS LIST / PIPELINE -->
-
-  <div class="card">
-
-    <div class="top-bar">
-
-      <h2>Orders</h2>
-
-      <div class="view-toggle">
-
-        <button
-          type="button"
-          id="listViewBtn"
-          class="secondary active"
-          onclick="showListView()"
-        >
-          List View
-        </button>
-
-        <button
-          type="button"
-          id="pipelineViewBtn"
-          class="secondary"
-          onclick="showPipelineView()"
-        >
-          Pipeline View
-        </button>
-
-        <button
-          class="secondary"
-          onclick="loadOrders()"
-        >
-          Refresh
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <div id="listViewContainer">
-
-      <div class="table-wrapper">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Party Name</th>
-              <th>Product</th>
-              <th>Quantity</th>
-              <th>Amount</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-
-          <tbody id="ordersList"></tbody>
-
-        </table>
-
-      </div>
-
-      <div class="orders-cards" id="ordersCards"></div>
-
-    </div>
-
-
-    <div id="kanbanViewContainer" style="display: none;">
-
-      <div class="kanban-board" id="kanbanBoard"></div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<script>
-
-  /* =========================================
-     SUPABASE CONFIGURATION
-     ========================================= */
-
-  const SUPABASE_URL = "https://vcyhaztkucppqfcvoari.supabase.co";
-
-  const SUPABASE_KEY = "sb_publishable_KuuyyC6f2LL6T2M1F0V8OQ_wSVRNccO";
-
-
-  const supabaseClient =
-    supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-
-  /* =========================================
-     EDIT MODE STATE
-     ========================================= */
-
-  let editingOrderId = null;
-
-  let ordersData = [];
-
-
-  /* =========================================
-     PIPELINE STAGES
-     ========================================= */
-
-  const PIPELINE_STAGES = [
-    { key: "New Enquiry", emoji: "🆕", special: false },
-    { key: "Design in Progress", emoji: "🖥️", special: false },
-    { key: "Customer Approval Pending", emoji: "⏳", special: false },
-    { key: "Design Approved", emoji: "👍", special: false },
-    { key: "Master Complete", emoji: "🖨️", special: false },
-    { key: "Printing in Progress", emoji: "🖨️", special: false },
-    { key: "Finishing / Binding", emoji: "✂️", special: false },
-    { key: "Ready for Delivery", emoji: "📦", special: false },
-    { key: "Delivered / Completed", emoji: "🚚", special: false },
-    { key: "On Hold", emoji: "⏸️", special: true },
-    { key: "Cancelled", emoji: "❌", special: true }
-  ];
-
-
-  /* =========================================
-     INITIAL SETUP
-     ========================================= */
-
-  document
-    .getElementById("orderDate")
-    .valueAsDate = new Date();
-
-
-  addItem();
-
-  loadOrders();
-
-
-  /* =========================================
-     ADD ITEM
-     ========================================= */
-
-  function addItem(product, quantity, amount) {
-
-    const container =
-      document.getElementById("itemsContainer");
-
-
-    const row =
-      document.createElement("div");
-
-
-    row.className = "item-row";
-
-
-    row.innerHTML = `
-
-      <input
-        type="text"
-        class="product"
-        placeholder="Product details"
-        value="${product ? String(product).replace(/"/g, "&quot;") : ""}"
-      />
-
-      <input
-        type="number"
-        class="quantity"
-        placeholder="Qty"
-        min="1"
-        value="${quantity !== undefined && quantity !== null ? quantity : ""}"
-      />
-
-      <input
-        type="number"
-        class="amount"
-        placeholder="Amount"
-        min="0"
-        step="0.01"
-        oninput="calculateTotal()"
-        value="${amount !== undefined && amount !== null ? amount : ""}"
-      />
-
-      <button
-        type="button"
-        class="delete-btn"
-        onclick="removeItem(this)"
-      >
-        ✕
-      </button>
-
-    `;
-
-
-    container.appendChild(row);
-
-
-    calculateTotal();
-
-  }
-
-
-  /* =========================================
-     REMOVE ITEM
-     ========================================= */
-
-  function removeItem(button) {
-
-    const row = button.parentElement;
-
-    row.remove();
-
-    calculateTotal();
-
-  }
-
-
-  /* =========================================
-     CALCULATE TOTAL
-     ========================================= */
-
-  function calculateTotal() {
-
-    let total = 0;
-
-
-    const amounts =
-      document.querySelectorAll(".amount");
-
-
-    amounts.forEach(amount => {
-
-      total += Number(amount.value || 0);
-
+  <!-- SCRIPT -->
+  <script>
+    /* =========================================
+       SUPABASE SETUP & VARIABLES
+       ========================================= */
+
+    const SUPABASE_URL = "https://rcsqxqyahzbxbnkmpfhy.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjc3F4cXlhaHpieBJubmttcGZoeSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzAzNjUxNDAwLCJleHAiOjE5MTk0MjczMDB9.l-7zRfJtAR9ebqKpYkRLKV0e0AEhWQCvvmIIBPwGbBg";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let ordersData = [];
+    let editingOrderId = null;
+    let currentFilter = null;
+
+    const PIPELINE_STAGES = [
+      { key: "New Enquiry", emoji: "🆕", special: false },
+      { key: "Design in Progress", emoji: "🖥️", special: false },
+      { key: "Customer Approval Pending", emoji: "⏳", special: false },
+      { key: "Design Approved", emoji: "👍", special: false },
+      { key: "Master Complete", emoji: "🖨️", special: false },
+      { key: "Printing in Progress", emoji: "🖨️", special: false },
+      { key: "Finishing / Binding", emoji: "✂️", special: false },
+      { key: "Ready for Delivery", emoji: "📦", special: false },
+      { key: "Delivered / Completed", emoji: "🚚", special: false },
+      { key: "On Hold", emoji: "⏸️", special: true },
+      { key: "Cancelled", emoji: "❌", special: true },
+    ];
+
+    const DASHBOARD_MAPPING = {
+      "New Orders": "New Enquiry",
+      "Design Pending": "Design in Progress",
+      "Waiting for Approval": "Customer Approval Pending",
+      "Printing Jobs": "Printing in Progress",
+      "Finishing Jobs": "Finishing / Binding",
+      "Ready for Delivery": "Ready for Delivery",
+      "Completed Orders": "Delivered / Completed",
+    };
+
+    /* =========================================
+       NAVIGATION & VIEW MANAGEMENT
+       ========================================= */
+
+    function navigateTo(section) {
+      // Hide all sections
+      document.querySelectorAll('.view-section').forEach(section => {
+        section.classList.remove('active');
+      });
+
+      // Remove active class from all nav buttons
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Show selected section
+      const element = document.getElementById(section);
+      if (element) {
+        element.classList.add('active');
+      }
+
+      // Add active class to clicked nav button
+      event.target.classList.add('active');
+
+      // Update page title
+      const titles = {
+        'dashboard': 'Dashboard',
+        'neworder': 'New Order',
+        'listview': 'List View',
+        'pipeline': 'Pipeline'
+      };
+      document.getElementById('pageTitle').innerText = titles[section] || 'Dashboard';
+
+      // Close mobile sidebar
+      closeSidebar();
+
+      // Render content
+      if (section === 'pipeline') {
+        renderKanban();
+      } else if (section === 'listview') {
+        renderListView();
+      } else if (section === 'dashboard') {
+        renderDashboard();
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('open');
+    }
+
+    function closeSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.remove('open');
+    }
+
+    /* =========================================
+       INITIALIZATION
+       ========================================= */
+
+    window.addEventListener('load', () => {
+      document.getElementById('orderDate').valueAsDate = new Date();
+      addItem();
+      loadOrders();
     });
 
-
-    document
-      .getElementById("totalAmount")
-      .innerText =
-        total.toFixed(2);
-
-  }
-
-
-  /* =========================================
-     SAVE ORDER
-     ========================================= */
-
-  async function saveOrder() {
-
-    const partyName =
-      document
-        .getElementById("partyName")
-        .value
-        .trim();
-
-
-    const orderDate =
-      document
-        .getElementById("orderDate")
-        .value;
-
-
-    if (!partyName) {
-
-      alert("Please enter Party Name");
-
-      return;
-
-    }
-
-
-    const rows =
-      document.querySelectorAll(".item-row");
-
-
-    const items = [];
-
-
-    rows.forEach(row => {
-
-      const product =
-        row
-          .querySelector(".product")
-          .value
-          .trim();
-
-
-      const quantityValue =
-        row
-          .querySelector(".quantity")
-          .value;
-
-
-      const amountValue =
-        row
-          .querySelector(".amount")
-          .value;
-
-
-      if (product) {
-
-        items.push({
-
-          product_details: product,
-
-          quantity:
-            quantityValue
-              ? Number(quantityValue)
-              : null,
-
-          amount:
-            amountValue
-              ? Number(amountValue)
-              : null,
-
-          status: "New Enquiry"
-
-        });
-
-      }
-
-    });
-
-
-    if (items.length === 0) {
-
-      alert("Please add at least one product");
-
-      return;
-
-    }
-
-
-    const isEditing = editingOrderId !== null;
-
-
-    let orderId;
-
-
-    if (isEditing) {
-
-      /* UPDATE MAIN ORDER */
-
-      const {
-        error: updateError
-      } = await supabaseClient
-
-        .from("orders")
-
-        .update({
-          party_name: partyName,
-          order_date: orderDate
-        })
-
-        .eq("id", editingOrderId);
-
-
-      if (updateError) {
-
-        console.error(updateError);
-
-        alert(
-          "Error updating order: " +
-          updateError.message
-        );
-
-        return;
-
-      }
-
-
-      orderId = editingOrderId;
-
-
-      /* REMOVE OLD ITEMS BEFORE RE-ADDING */
-
-      const {
-        error: deleteItemsError
-      } = await supabaseClient
-
-        .from("order_items")
-
-        .delete()
-
-        .eq("order_id", orderId);
-
-
-      if (deleteItemsError) {
-
-        console.error(deleteItemsError);
-
-        alert(
-          "Error updating product details: " +
-          deleteItemsError.message
-        );
-
-        return;
-
-      }
-
-    } else {
-
-      /* SAVE MAIN ORDER */
-
-      const {
-        data: order,
-        error: orderError
-      } = await supabaseClient
-
-        .from("orders")
-
-        .insert({
-          party_name: partyName,
-          order_date: orderDate,
-          status: "New Enquiry"
-        })
-
-        .select()
-
-        .single();
-
-
-      if (orderError) {
-
-        console.error(orderError);
-
-        alert(
-          "Error saving order: " +
-          orderError.message
-        );
-
-        return;
-
-      }
-
-
-      orderId = order.id;
-
-    }
-
-
-    /* ADD ORDER ID TO EACH ITEM */
-
-    const itemsToSave =
-      items.map(item => ({
-
-        order_id: orderId,
-
-        product_details:
-          item.product_details,
-
-        quantity:
-          item.quantity,
-
-        amount:
-          item.amount,
-
-        status:
-          item.status
-
-      }));
-
-
-    /* SAVE ORDER ITEMS */
-
-    const {
-      error: itemsError
-    } = await supabaseClient
-
-      .from("order_items")
-
-      .insert(itemsToSave);
-
-
-    if (itemsError) {
-
-      console.error(itemsError);
-
-      alert(
-        (isEditing ? "Order updated, but" : "Order saved, but") +
-        " product details failed: " +
-        itemsError.message
-      );
-
-      return;
-
-    }
-
-
-    alert(
-      isEditing
-        ? "Order Updated Successfully!"
-        : "Order Saved Successfully!"
-    );
-
-
-    clearForm();
-
-    loadOrders();
-
-  }
-
-
-  /* =========================================
-     LOAD ORDERS
-     ONE PARTY + ONE DATE = ONE ROW
-     ========================================= */
-
-  async function loadOrders() {
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-
-      .from("orders")
-
-      .select(`
-        id,
-        order_date,
-        party_name,
-        status,
-        order_items (
-          id,
-          product_details,
-          quantity,
-          amount
-        )
-      `)
-
-      .order(
-        "id",
-        {
-          ascending: false
+    /* =========================================
+       LOAD ORDERS FROM SUPABASE
+       ========================================= */
+
+    async function loadOrders() {
+      try {
+        const { data, error } = await supabaseClient
+          .from("orders")
+          .select("*, order_items(*)");
+
+        if (error) {
+          console.error(error);
+          alert("Error loading orders: " + error.message);
+          return;
         }
-      );
 
-
-    if (error) {
-
-      console.error(error);
-
-      return;
-
+        ordersData = data || [];
+        renderDashboard();
+        renderListView();
+        renderKanban();
+      } catch (error) {
+        console.error(error);
+        alert("Unexpected error: " + error.message);
+      }
     }
 
+    /* =========================================
+       DASHBOARD SUMMARY
+       ========================================= */
 
-    ordersData = data;
+    function renderDashboard() {
+      const summaryContainer = document.getElementById('dashboardSummary');
+      summaryContainer.innerHTML = '';
 
+      const summaryData = [
+        {
+          title: 'New Orders',
+          icon: '📥',
+          key: 'New Enquiry',
+          displayKey: 'New Orders'
+        },
+        {
+          title: 'Design Pending',
+          icon: '🎨',
+          key: 'Design in Progress',
+          displayKey: 'Design Pending'
+        },
+        {
+          title: 'Waiting for Approval',
+          icon: '⏳',
+          key: 'Customer Approval Pending',
+          displayKey: 'Waiting for Approval'
+        },
+        {
+          title: 'Printing Jobs',
+          icon: '🖨️',
+          key: 'Printing in Progress',
+          displayKey: 'Printing Jobs'
+        },
+        {
+          title: 'Finishing Jobs',
+          icon: '✂️',
+          key: 'Finishing / Binding',
+          displayKey: 'Finishing Jobs'
+        },
+        {
+          title: 'Ready for Delivery',
+          icon: '📦',
+          key: 'Ready for Delivery',
+          displayKey: 'Ready for Delivery'
+        },
+        {
+          title: 'Completed Orders',
+          icon: '✅',
+          key: 'Delivered / Completed',
+          displayKey: 'Completed Orders'
+        }
+      ];
 
-    const list =
-      document.getElementById("ordersList");
+      summaryData.forEach(item => {
+        const count = ordersData.filter(o =>
+          (o.status || "New Enquiry") === item.key
+        ).length;
 
-    const cardsContainer =
-      document.getElementById("ordersCards");
+        const card = document.createElement('div');
+        card.className = 'dashboard-card' + (currentFilter === item.key ? ' filtered' : '');
+        card.onclick = () => filterByStatus(item.key, item.displayKey);
 
+        card.innerHTML = `
+          <div class="dashboard-card-icon">${item.icon}</div>
+          <div class="dashboard-card-title">${item.title}</div>
+          <div class="dashboard-card-count">${count}</div>
+        `;
 
-    list.innerHTML = "";
+        summaryContainer.appendChild(card);
+      });
+    }
 
-    cardsContainer.innerHTML = "";
+    /* =========================================
+       FILTER BY STATUS
+       ========================================= */
 
+    function filterByStatus(statusKey, displayName) {
+      currentFilter = statusKey;
 
-    data.forEach(order => {
+      // Update dashboard cards
+      document.querySelectorAll('.dashboard-card').forEach(card => {
+        card.classList.remove('filtered');
+      });
+      event.target.closest('.dashboard-card').classList.add('filtered');
 
-      let products = "";
-      let quantities = "";
-      let amounts = "";
+      // Show filter info
+      document.getElementById('filterInfo').style.display = 'flex';
+      document.getElementById('filterInfo2').style.display = 'flex';
+      document.getElementById('filterInfo3').style.display = 'flex';
 
-      let cardItems = "";
+      document.getElementById('filterText').innerText = `Showing ${displayName} orders`;
+      document.getElementById('filterText2').innerText = `Showing ${displayName} orders`;
+      document.getElementById('filterText3').innerText = `Showing ${displayName} orders`;
 
+      // Navigate to list view
+      navigateTo('listview');
+    }
 
-      if (
-        order.order_items &&
-        order.order_items.length > 0
-      ) {
+    function clearFilter() {
+      currentFilter = null;
+      document.getElementById('filterInfo').style.display = 'none';
+      document.getElementById('filterInfo2').style.display = 'none';
+      document.getElementById('filterInfo3').style.display = 'none';
+      document.querySelectorAll('.dashboard-card').forEach(card => {
+        card.classList.remove('filtered');
+      });
+      renderListView();
+      renderKanban();
+    }
 
-        order.order_items.forEach(item => {
+    /* =========================================
+       RENDER LIST VIEW
+       ========================================= */
 
-          products += `
-            <div>
-              ${item.product_details || "-"}
+    function renderListView() {
+      const tableBody = document.getElementById('ordersTableBody');
+      tableBody.innerHTML = '';
+
+      const filteredOrders = currentFilter
+        ? ordersData.filter(o => (o.status || "New Enquiry") === currentFilter)
+        : ordersData;
+
+      if (filteredOrders.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No orders found</td></tr>';
+        return;
+      }
+
+      filteredOrders.forEach(order => {
+        let productsHtml = '';
+        let total = 0;
+
+        if (order.order_items && order.order_items.length > 0) {
+          order.order_items.forEach(item => {
+            const amt = item.amount !== null && item.amount !== undefined ? Number(item.amount) : 0;
+            total += amt;
+            productsHtml += `<div>${item.product_details || '-'} (Qty: ${item.quantity || 0})</div>`;
+          });
+        }
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${order.party_name || '-'}</td>
+          <td>${order.order_date || '-'}</td>
+          <td>${order.status || 'New Enquiry'}</td>
+          <td class="multi-line">${productsHtml || '<div>No products</div>'}</td>
+          <td>₹${total.toFixed(2)}</td>
+          <td>
+            <div class="row-actions">
+              <button class="edit-btn" onclick="editOrder(${order.id})">Edit</button>
+              <button class="delete-btn" onclick="deleteOrder(${order.id})">Delete</button>
             </div>
-          `;
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
 
+    /* =========================================
+       KANBAN PIPELINE
+       ========================================= */
 
-          quantities += `
-            <div>
-              ${item.quantity ?? "-"}
-            </div>
-          `;
+    function renderKanban() {
+      const board = document.getElementById("kanbanBoard");
 
+      if (!board) {
+        return;
+      }
 
-          amounts += `
-            <div>
-              ${
-                item.amount !== null &&
-                item.amount !== undefined
-                  ? "₹ " +
-                    Number(item.amount).toFixed(2)
-                  : "-"
-              }
-            </div>
-          `;
+      board.innerHTML = "";
 
+      PIPELINE_STAGES.forEach(stage => {
+        const ordersInStage = currentFilter
+          ? ordersData.filter(order =>
+              (order.status || "New Enquiry") === stage.key &&
+              (order.status || "New Enquiry") === currentFilter
+            )
+          : ordersData.filter(order =>
+              (order.status || "New Enquiry") === stage.key
+            );
 
-          cardItems += `
-            <div class="order-card-item">
-              <div class="product">${item.product_details || "-"}</div>
-              <div class="qty">${item.quantity !== null && item.quantity !== undefined ? "Qty: " + item.quantity : ""}</div>
-              <div class="amount">${
-                item.amount !== null &&
-                item.amount !== undefined
-                  ? "₹ " + Number(item.amount).toFixed(2)
-                  : "-"
-              }</div>
-            </div>
-          `;
+        const column = document.createElement("div");
+        column.className = "kanban-column" + (stage.special ? " special" : "");
 
-        });
+        let cardsHtml = "";
 
-      } else {
+        if (ordersInStage.length === 0) {
+          cardsHtml = `<div class="kanban-empty">No orders</div>`;
+        } else {
+          ordersInStage.forEach(order => {
+            let productsHtml = "";
+            let total = 0;
 
-        products = "<div>-</div>";
+            if (order.order_items && order.order_items.length > 0) {
+              order.order_items.forEach(item => {
+                const amt = item.amount !== null && item.amount !== undefined ? Number(item.amount) : 0;
+                total += amt;
+                productsHtml += `
+                  <div>
+                    <span>${item.product_details || "-"}${item.quantity ? " (Qty: " + item.quantity + ")" : ""}</span>
+                    <span>${item.amount !== null && item.amount !== undefined ? "₹" + amt.toFixed(2) : "-"}</span>
+                  </div>
+                `;
+              });
+            } else {
+              productsHtml = `<div>No products</div>`;
+            }
 
-        quantities = "<div>-</div>";
+            const optionsHtml = PIPELINE_STAGES.map(s =>
+              `<option value="${s.key}" ${(order.status || "New Enquiry") === s.key ? "selected" : ""}>${s.emoji} ${s.key}</option>`
+            ).join("");
 
-        amounts = "<div>-</div>";
+            cardsHtml += `
+              <div class="kanban-card">
+                <div class="kanban-card-party">${order.party_name || "-"}</div>
+                <div class="kanban-card-date">${order.order_date || "-"}</div>
+                <div class="kanban-card-products">
+                  ${productsHtml}
+                </div>
+                <div class="kanban-card-total">Total: ₹${total.toFixed(2)}</div>
+                <select
+                  class="kanban-status-select"
+                  onchange="updateOrderStatus(${order.id}, this.value)"
+                >
+                  ${optionsHtml}
+                </select>
+              </div>
+            `;
+          });
+        }
 
-        cardItems = `
-          <div class="order-card-item">
-            <div class="product">-</div>
-            <div class="qty"></div>
-            <div class="amount">-</div>
+        column.innerHTML = `
+          <div class="kanban-column-header">
+            <span>${stage.emoji} ${stage.key}</span>
+            <span class="kanban-count">${ordersInStage.length}</span>
+          </div>
+          <div class="kanban-cards">
+            ${cardsHtml}
           </div>
         `;
 
-      }
-
-
-      const row =
-        document.createElement("tr");
-
-
-      row.innerHTML = `
-
-        <td>
-          ${order.order_date || "-"}
-        </td>
-
-        <td>
-          ${order.party_name || "-"}
-        </td>
-
-        <td class="multi-line">
-          ${products}
-        </td>
-
-        <td class="multi-line">
-          ${quantities}
-        </td>
-
-        <td class="multi-line">
-          ${amounts}
-        </td>
-
-        <td>
-          <div class="row-actions">
-            <button
-              type="button"
-              class="edit-btn"
-              onclick="editOrder(${order.id})"
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              class="delete-btn"
-              onclick="deleteOrder(${order.id})"
-            >
-              Delete
-            </button>
-          </div>
-        </td>
-
-      `;
-
-
-      list.appendChild(row);
-
-
-      const card =
-        document.createElement("div");
-
-
-      card.className = "order-card";
-
-
-      card.innerHTML = `
-
-        <div class="order-card-header">
-          <div>
-            <div class="order-card-party">${order.party_name || "-"}</div>
-            <div class="order-card-date">${order.order_date || "-"}</div>
-          </div>
-          <div class="order-card-actions">
-            <button
-              type="button"
-              class="edit-btn"
-              onclick="editOrder(${order.id})"
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              class="delete-btn"
-              onclick="deleteOrder(${order.id})"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-
-        ${cardItems}
-
-      `;
-
-
-      cardsContainer.appendChild(card);
-
-    });
-
-
-    renderKanban();
-
-    renderDashboard();
-
-  }
-
-
-  /* =========================================
-     RENDER DASHBOARD SUMMARY
-     ========================================= */
-
-  function renderDashboard() {
-
-    const counts = {
-      newEnquiry: 0,
-      designPending: 0,
-      approvalPending: 0,
-      printingJobs: 0,
-      finishingJobs: 0,
-      readyDelivery: 0,
-      completed: 0
-    };
-
-
-    ordersData.forEach(order => {
-
-      const status = order.status || "New Enquiry";
-
-
-      if (status === "New Enquiry") {
-
-        counts.newEnquiry++;
-
-      } else if (status === "Design in Progress") {
-
-        counts.designPending++;
-
-      } else if (status === "Customer Approval Pending") {
-
-        counts.approvalPending++;
-
-      } else if (
-        status === "Master Complete" ||
-        status === "Printing in Progress"
-      ) {
-
-        counts.printingJobs++;
-
-      } else if (status === "Finishing / Binding") {
-
-        counts.finishingJobs++;
-
-      } else if (status === "Ready for Delivery") {
-
-        counts.readyDelivery++;
-
-      } else if (status === "Delivered / Completed") {
-
-        counts.completed++;
-
-      }
-
-      /* "On Hold" and "Cancelled" are intentionally excluded */
-
-    });
-
-
-    document.getElementById("dashNewEnquiry").innerText = counts.newEnquiry;
-
-    document.getElementById("dashDesignPending").innerText = counts.designPending;
-
-    document.getElementById("dashApprovalPending").innerText = counts.approvalPending;
-
-    document.getElementById("dashPrintingJobs").innerText = counts.printingJobs;
-
-    document.getElementById("dashFinishingJobs").innerText = counts.finishingJobs;
-
-    document.getElementById("dashReadyDelivery").innerText = counts.readyDelivery;
-
-    document.getElementById("dashCompleted").innerText = counts.completed;
-
-  }
-
-
-  /* =========================================
-     RENDER KANBAN PIPELINE
-     ========================================= */
-
-  function renderKanban() {
-
-    const board =
-      document.getElementById("kanbanBoard");
-
-
-    if (!board) {
-
-      return;
-
+        board.appendChild(column);
+      });
     }
 
+    /* =========================================
+       UPDATE ORDER STATUS
+       ========================================= */
 
-    board.innerHTML = "";
+    async function updateOrderStatus(orderId, newStatus) {
+      const { error } = await supabaseClient
+        .from("orders")
+        .update({ status: newStatus })
+        .eq("id", orderId);
 
+      if (error) {
+        console.error(error);
+        alert("Error updating status: " + error.message);
+        loadOrders();
+        return;
+      }
 
-    PIPELINE_STAGES.forEach(stage => {
+      const order = ordersData.find(o => o.id === orderId);
+      if (order) {
+        order.status = newStatus;
+      }
 
-      const ordersInStage =
-        ordersData.filter(order =>
-          (order.status || "New Enquiry") === stage.key
-        );
+      renderKanban();
+      renderDashboard();
+      renderListView();
+    }
 
+    /* =========================================
+       FORM ITEM MANAGEMENT
+       ========================================= */
 
-      const column =
-        document.createElement("div");
+    function addItem(productDetails = "", quantity = "", amount = "") {
+      const itemsContainer = document.getElementById("itemsContainer");
 
+      const itemRow = document.createElement("div");
+      itemRow.className = "item-row";
 
-      column.className =
-        "kanban-column" +
-        (stage.special ? " special" : "");
+      itemRow.innerHTML = `
+        <input type="text" placeholder="Product Details" value="${productDetails}" onchange="calculateTotal()" />
+        <input type="number" placeholder="Qty" value="${quantity}" onchange="calculateTotal()" />
+        <input type="number" placeholder="Amount" value="${amount}" onchange="calculateTotal()" />
+        <button class="delete-btn" onclick="this.parentElement.remove(); calculateTotal();">Delete</button>
+      `;
 
+      itemsContainer.appendChild(itemRow);
+    }
 
-      let cardsHtml = "";
+    function calculateTotal() {
+      const itemRows = document.querySelectorAll(".item-row");
+      let total = 0;
 
+      itemRows.forEach(row => {
+        const amountInput = row.querySelector('input[type="number"]:nth-of-type(2)');
+        const amount = amountInput && amountInput.value ? parseFloat(amountInput.value) : 0;
+        total += amount;
+      });
 
-      if (ordersInStage.length === 0) {
+      document.getElementById("totalAmount").innerText = total.toFixed(2);
+    }
 
-        cardsHtml =
-          `<div class="kanban-empty">No orders</div>`;
+    /* =========================================
+       SAVE ORDER
+       ========================================= */
 
-      } else {
+    async function saveOrder() {
+      const partyName = document.getElementById("partyName").value.trim();
+      const orderDate = document.getElementById("orderDate").value;
 
-        ordersInStage.forEach(order => {
+      if (!partyName) {
+        alert("Please enter a party name");
+        return;
+      }
 
-          let productsHtml = "";
+      if (!orderDate) {
+        alert("Please select an order date");
+        return;
+      }
 
-          let total = 0;
+      const itemRows = document.querySelectorAll(".item-row");
+      const items = [];
 
+      for (let row of itemRows) {
+        const productDetails = row.querySelector('input[type="text"]').value.trim();
+        const quantity = row.querySelector('input[type="number"]:nth-of-type(1)').value;
+        const amount = row.querySelector('input[type="number"]:nth-of-type(2)').value;
 
-          if (order.order_items && order.order_items.length > 0) {
+        if (productDetails) {
+          items.push({
+            product_details: productDetails,
+            quantity: quantity || 0,
+            amount: amount ? parseFloat(amount) : 0
+          });
+        }
+      }
 
-            order.order_items.forEach(item => {
+      if (items.length === 0) {
+        alert("Please add at least one product");
+        return;
+      }
 
-              const amt =
-                item.amount !== null &&
-                item.amount !== undefined
-                  ? Number(item.amount)
-                  : 0;
+      try {
+        if (editingOrderId) {
+          const { error: updateError } = await supabaseClient
+            .from("orders")
+            .update({
+              party_name: partyName,
+              order_date: orderDate
+            })
+            .eq("id", editingOrderId);
 
-
-              total += amt;
-
-
-              productsHtml += `
-                <div>
-                  <span>${item.product_details || "-"}${item.quantity ? " (Qty: " + item.quantity + ")" : ""}</span>
-                  <span>${
-                    item.amount !== null &&
-                    item.amount !== undefined
-                      ? "₹" + amt.toFixed(2)
-                      : "-"
-                  }</span>
-                </div>
-              `;
-
-            });
-
-          } else {
-
-            productsHtml = `<div>No products</div>`;
-
+          if (updateError) {
+            console.error(updateError);
+            alert("Error updating order: " + updateError.message);
+            return;
           }
 
+          await supabaseClient.from("order_items").delete().eq("order_id", editingOrderId);
 
-          const optionsHtml =
-            PIPELINE_STAGES.map(s =>
-              `<option value="${s.key}" ${
-                (order.status || "New Enquiry") === s.key
-                  ? "selected"
-                  : ""
-              }>${s.emoji} ${s.key}</option>`
-            ).join("");
+          for (let item of items) {
+            const { error: insertError } = await supabaseClient.from("order_items").insert({
+              order_id: editingOrderId,
+              product_details: item.product_details,
+              quantity: item.quantity,
+              amount: item.amount
+            });
 
+            if (insertError) {
+              console.error(insertError);
+              alert("Error adding order item: " + insertError.message);
+              return;
+            }
+          }
 
-          cardsHtml += `
+          alert("Order Updated Successfully!");
+        } else {
+          const { data: newOrder, error: insertError } = await supabaseClient
+            .from("orders")
+            .insert({
+              party_name: partyName,
+              order_date: orderDate,
+              status: "New Enquiry"
+            })
+            .select();
 
-            <div class="kanban-card">
+          if (insertError) {
+            console.error(insertError);
+            alert("Error creating order: " + insertError.message);
+            return;
+          }
 
-              <div class="kanban-card-party">${order.party_name || "-"}</div>
+          const orderId = newOrder[0].id;
 
-              <div class="kanban-card-date">${order.order_date || "-"}</div>
+          for (let item of items) {
+            const { error: itemInsertError } = await supabaseClient.from("order_items").insert({
+              order_id: orderId,
+              product_details: item.product_details,
+              quantity: item.quantity,
+              amount: item.amount
+            });
 
-              <div class="kanban-card-products">
-                ${productsHtml}
-              </div>
+            if (itemInsertError) {
+              console.error(itemInsertError);
+              alert("Error adding order item: " + itemInsertError.message);
+              return;
+            }
+          }
 
-              <div class="kanban-card-total">Total: ₹${total.toFixed(2)}</div>
+          alert("Order Created Successfully!");
+        }
 
-              <select
-                class="kanban-status-select"
-                onchange="updateOrderStatus(${order.id}, this.value)"
-              >
-                ${optionsHtml}
-              </select>
+        clearForm();
+        loadOrders();
+        navigateTo('dashboard');
+      } catch (error) {
+        console.error(error);
+        alert("Unexpected error: " + error.message);
+      }
+    }
 
-            </div>
+    /* =========================================
+       EDIT ORDER
+       ========================================= */
 
-          `;
+    function editOrder(orderId) {
+      const order = ordersData.find(o => o.id === orderId);
 
-        });
-
+      if (!order) {
+        alert("Order not found. Please refresh and try again.");
+        return;
       }
 
+      editingOrderId = orderId;
 
-      column.innerHTML = `
+      document.getElementById("partyName").value = order.party_name || "";
+      document.getElementById("orderDate").value = order.order_date || "";
 
-        <div class="kanban-column-header">
-          <span>${stage.emoji} ${stage.key}</span>
-          <span class="kanban-count">${ordersInStage.length}</span>
-        </div>
+      const itemsContainer = document.getElementById("itemsContainer");
+      itemsContainer.innerHTML = "";
 
-        <div class="kanban-cards">
-          ${cardsHtml}
-        </div>
+      if (order.order_items && order.order_items.length > 0) {
+        order.order_items.forEach(item => {
+          addItem(item.product_details, item.quantity, item.amount);
+        });
+      } else {
+        addItem();
+      }
 
-      `;
+      calculateTotal();
 
+      document.getElementById("formTitle").innerText = "Edit Order";
+      document.getElementById("saveOrderBtn").innerText = "Update Order";
 
-      board.appendChild(column);
+      navigateTo('neworder');
+    }
 
-    });
+    /* =========================================
+       DELETE ORDER
+       ========================================= */
 
-  }
+    async function deleteOrder(orderId) {
+      const confirmDelete = confirm("Are you sure you want to delete this order and all its products? This cannot be undone.");
 
+      if (!confirmDelete) {
+        return;
+      }
 
-  /* =========================================
-     UPDATE ORDER STATUS (KANBAN)
-     ========================================= */
+      const { error: itemsError } = await supabaseClient
+        .from("order_items")
+        .delete()
+        .eq("order_id", orderId);
 
-  async function updateOrderStatus(orderId, newStatus) {
+      if (itemsError) {
+        console.error(itemsError);
+        alert("Error deleting order items: " + itemsError.message);
+        return;
+      }
 
-    const {
-      error
-    } = await supabaseClient
+      const { error: orderError } = await supabaseClient
+        .from("orders")
+        .delete()
+        .eq("id", orderId);
 
-      .from("orders")
+      if (orderError) {
+        console.error(orderError);
+        alert("Error deleting order: " + orderError.message);
+        return;
+      }
 
-      .update({ status: newStatus })
+      if (editingOrderId === orderId) {
+        clearForm();
+      }
 
-      .eq("id", orderId);
-
-
-    if (error) {
-
-      console.error(error);
-
-      alert(
-        "Error updating status: " +
-        error.message
-      );
-
+      alert("Order Deleted Successfully!");
       loadOrders();
-
-      return;
-
     }
 
+    /* =========================================
+       CLEAR FORM
+       ========================================= */
 
-    const order =
-      ordersData.find(o => o.id === orderId);
+    function clearForm() {
+      editingOrderId = null;
 
+      document.getElementById("formTitle").innerText = "New Order";
+      document.getElementById("saveOrderBtn").innerText = "Save Order";
 
-    if (order) {
+      document.getElementById("partyName").value = "";
+      document.getElementById("orderDate").valueAsDate = new Date();
 
-      order.status = newStatus;
-
-    }
-
-
-    renderKanban();
-
-    renderDashboard();
-
-  }
-
-
-  /* =========================================
-     VIEW TOGGLE (LIST / PIPELINE)
-     ========================================= */
-
-  function showListView() {
-
-    document
-      .getElementById("listViewContainer")
-      .style.display = "";
-
-
-    document
-      .getElementById("kanbanViewContainer")
-      .style.display = "none";
-
-
-    document
-      .getElementById("listViewBtn")
-      .classList.add("active");
-
-
-    document
-      .getElementById("pipelineViewBtn")
-      .classList.remove("active");
-
-  }
-
-
-  function showPipelineView() {
-
-    document
-      .getElementById("listViewContainer")
-      .style.display = "none";
-
-
-    document
-      .getElementById("kanbanViewContainer")
-      .style.display = "";
-
-
-    document
-      .getElementById("pipelineViewBtn")
-      .classList.add("active");
-
-
-    document
-      .getElementById("listViewBtn")
-      .classList.remove("active");
-
-
-    renderKanban();
-
-  }
-
-
-  /* =========================================
-     EDIT ORDER
-     ========================================= */
-
-  function editOrder(orderId) {
-
-    const order =
-      ordersData.find(o => o.id === orderId);
-
-
-    if (!order) {
-
-      alert("Order not found. Please refresh and try again.");
-
-      return;
-
-    }
-
-
-    editingOrderId = orderId;
-
-
-    document
-      .getElementById("partyName")
-      .value = order.party_name || "";
-
-
-    document
-      .getElementById("orderDate")
-      .value = order.order_date || "";
-
-
-    const itemsContainer =
-      document.getElementById("itemsContainer");
-
-
-    itemsContainer.innerHTML = "";
-
-
-    if (order.order_items && order.order_items.length > 0) {
-
-      order.order_items.forEach(item => {
-
-        addItem(
-          item.product_details,
-          item.quantity,
-          item.amount
-        );
-
-      });
-
-    } else {
-
+      document.getElementById("itemsContainer").innerHTML = "";
       addItem();
-
+      calculateTotal();
     }
 
+    /* =========================================
+       TOGGLE TABLE/CARD VIEW
+       ========================================= */
 
-    calculateTotal();
+    function toggleTableView() {
+      const table = document.querySelector('table');
+      const cardsContainer = document.getElementById('ordersCardsContainer');
 
-
-    document
-      .getElementById("formTitle")
-      .innerText = "Edit Order";
-
-
-    document
-      .getElementById("saveOrderBtn")
-      .innerText = "Update Order";
-
-
-    showOrderForm();
-
-  }
-
-
-  /* =========================================
-     DELETE ORDER
-     ========================================= */
-
-  async function deleteOrder(orderId) {
-
-    const confirmDelete =
-      confirm(
-        "Are you sure you want to delete this order and all its products? This cannot be undone."
-      );
-
-
-    if (!confirmDelete) {
-
-      return;
-
+      if (table.style.display === 'none') {
+        table.style.display = '';
+        cardsContainer.style.display = 'none';
+      } else {
+        table.style.display = 'none';
+        cardsContainer.style.display = 'grid';
+        renderOrderCards();
+      }
     }
 
+    function renderOrderCards() {
+      const cardsContainer = document.getElementById('ordersCardsContainer');
+      cardsContainer.innerHTML = '';
 
-    const {
-      error: itemsError
-    } = await supabaseClient
+      const filteredOrders = currentFilter
+        ? ordersData.filter(o => (o.status || "New Enquiry") === currentFilter)
+        : ordersData;
 
-      .from("order_items")
+      cardsContainer.style.display = 'grid';
+      cardsContainer.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+      cardsContainer.style.gap = '15px';
 
-      .delete()
+      filteredOrders.forEach(order => {
+        let productsHtml = '';
+        let total = 0;
 
-      .eq("order_id", orderId);
+        if (order.order_items && order.order_items.length > 0) {
+          order.order_items.forEach(item => {
+            const amt = item.amount !== null && item.amount !== undefined ? Number(item.amount) : 0;
+            total += amt;
+            productsHtml += `<div style="padding: 4px 0; font-size: 13px; color: #374151;">${item.product_details || '-'}</div>`;
+          });
+        }
 
-
-    if (itemsError) {
-
-      console.error(itemsError);
-
-      alert(
-        "Error deleting order items: " +
-        itemsError.message
-      );
-
-      return;
-
-    }
-
-
-    const {
-      error: orderError
-    } = await supabaseClient
-
-      .from("orders")
-
-      .delete()
-
-      .eq("id", orderId);
-
-
-    if (orderError) {
-
-      console.error(orderError);
-
-      alert(
-        "Error deleting order: " +
-        orderError.message
-      );
-
-      return;
-
-    }
-
-
-    /* IF THE DELETED ORDER WAS BEING EDITED, RESET THE FORM */
-
-    if (editingOrderId === orderId) {
-
-      clearForm();
-
-    }
-
-
-    alert("Order Deleted Successfully!");
-
-
-    loadOrders();
-
-  }
-
-
-  /* =========================================
-     CLEAR FORM
-     ========================================= */
-
-  function clearForm() {
-
-    editingOrderId = null;
-
-
-    document
-      .getElementById("formTitle")
-      .innerText = "New Order";
-
-
-    document
-      .getElementById("saveOrderBtn")
-      .innerText = "Save Order";
-
-
-    document
-      .getElementById("partyName")
-      .value = "";
-
-
-    document
-      .getElementById("orderDate")
-      .valueAsDate =
-        new Date();
-
-
-    document
-      .getElementById("itemsContainer")
-      .innerHTML = "";
-
-
-    addItem();
-
-
-    calculateTotal();
-
-  }
-
-
-  /* =========================================
-     SCROLL TO ORDER FORM
-     ========================================= */
-
-  function showOrderForm() {
-
-    document
-      .getElementById("orderForm")
-      .scrollIntoView({
-        behavior: "smooth"
+        const card = document.createElement('div');
+        card.style.cssText = 'background: white; border-radius: 10px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);';
+        card.innerHTML = `
+          <div style="font-weight: bold; font-size: 16px; margin-bottom: 8px;">${order.party_name || '-'}</div>
+          <div style="font-size: 13px; color: #6b7280; margin-bottom: 10px;">${order.order_date || '-'}</div>
+          <div style="font-size: 13px; margin-bottom: 10px; padding: 8px; background: #f9fafb; border-radius: 6px;">
+            <div style="font-weight: bold; margin-bottom: 4px;">Status: ${order.status || 'New Enquiry'}</div>
+          </div>
+          <div style="margin-bottom: 10px;">${productsHtml || '<div style="font-size: 13px; color: #9ca3af;">No products</div>'}</div>
+          <div style="font-weight: bold; color: #2563eb; margin-bottom: 12px;">Total: ₹${total.toFixed(2)}</div>
+          <div style="display: flex; gap: 8px;">
+            <button class="edit-btn" onclick="editOrder(${order.id})" style="flex: 1;">Edit</button>
+            <button class="delete-btn" onclick="deleteOrder(${order.id})" style="flex: 1;">Delete</button>
+          </div>
+        `;
+        cardsContainer.appendChild(card);
       });
+    }
 
-  }
-
-</script>
+  </script>
 
 </body>
 </html>
