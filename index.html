@@ -283,6 +283,24 @@
       border-radius: 8px;
       padding: 12px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      cursor: grab;
+      transition: all 0.2s ease;
+    }
+
+    .kanban-card:active {
+      cursor: grabbing;
+    }
+
+    .kanban-card.dragging {
+      opacity: 0.5;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transform: scale(1.02);
+    }
+
+    .kanban-cards.drag-over {
+      background: #e0f2fe;
+      border-radius: 8px;
+      box-shadow: inset 0 0 8px rgba(2, 132, 199, 0.3);
     }
 
     .kanban-card-party {
@@ -1207,7 +1225,7 @@
             ).join("");
 
             cardsHtml += `
-              <div class="kanban-card">
+              <div class="kanban-card" draggable="true" data-order-id="${order.id}">
                 <div class="kanban-card-party">${order.party_name || "-"}</div>
                 <div class="kanban-card-date">${order.order_date || "-"}</div>
                 <div class="kanban-card-products">
@@ -1230,13 +1248,15 @@
             <span>${stage.emoji} ${stage.key}</span>
             <span class="kanban-count">${ordersInStage.length}</span>
           </div>
-          <div class="kanban-cards">
+          <div class="kanban-cards" data-stage="${stage.key}">
             ${cardsHtml}
           </div>
         `;
 
         board.appendChild(column);
       });
+
+      setupDragDrop();
     }
 
     /* =========================================
@@ -1264,6 +1284,58 @@
       renderKanban();
       renderDashboard();
       renderListView();
+    }
+
+    /* =========================================
+       DRAG & DROP SETUP
+       ========================================= */
+
+    let draggedOrderId = null;
+
+    function setupDragDrop() {
+      const kanbanCards = document.querySelectorAll('.kanban-card');
+      const kanbanColumns = document.querySelectorAll('.kanban-cards');
+
+      // Setup drag start on cards
+      kanbanCards.forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+          draggedOrderId = card.getAttribute('data-order-id');
+          card.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', draggedOrderId);
+        });
+
+        card.addEventListener('dragend', (e) => {
+          card.classList.remove('dragging');
+          kanbanColumns.forEach(col => col.classList.remove('drag-over'));
+        });
+      });
+
+      // Setup drop zones on columns
+      kanbanColumns.forEach(column => {
+        column.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          column.classList.add('drag-over');
+        });
+
+        column.addEventListener('dragleave', (e) => {
+          if (e.target === column) {
+            column.classList.remove('drag-over');
+          }
+        });
+
+        column.addEventListener('drop', (e) => {
+          e.preventDefault();
+          column.classList.remove('drag-over');
+
+          const targetStage = column.getAttribute('data-stage');
+          if (draggedOrderId && targetStage) {
+            updateOrderStatus(parseInt(draggedOrderId), targetStage);
+          }
+          draggedOrderId = null;
+        });
+      });
     }
 
     /* =========================================
