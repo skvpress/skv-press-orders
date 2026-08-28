@@ -231,6 +231,77 @@
         font-size: 14px;
       }
     }
+    /* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 0;
+    }
+
+    header {
+        padding: 14px 12px;
+    }
+
+    header h1 {
+        font-size: 20px;
+    }
+
+    .container {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .card {
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    /* Party + Date */
+    .top-row {
+        grid-template-columns: 1fr !important;
+        gap: 12px;
+    }
+
+    /* Product Row */
+    .item-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px;
+    }
+
+    .item-row input:first-child {
+        grid-column: 1 / -1;
+    }
+
+    /* Remove button */
+    .remove-btn {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    /* Buttons */
+    .actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .actions button {
+        width: 100%;
+    }
+
+    /* Orders Table */
+    .orders-table-wrapper {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    table {
+        min-width: 650px;
+    }
+}
   </style>
 </head>
 
