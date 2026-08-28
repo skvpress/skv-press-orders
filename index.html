@@ -134,6 +134,10 @@
       overflow-x: auto;
     }
 
+    .orders-cards {
+      display: none;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -307,6 +311,73 @@ table {
     width: 100%;
     min-width: 600px;
 }
+
+/* Orders: table on desktop, cards on mobile */
+.table-wrapper {
+    display: none;
+}
+
+.orders-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.order-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.order-card-date {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: bold;
+}
+
+.order-card-party {
+    font-size: 16px;
+    font-weight: bold;
+    color: #111;
+}
+
+.order-card-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px dashed #e5e7eb;
+    font-size: 14px;
+}
+
+.order-card-item:last-child {
+    border-bottom: none;
+}
+
+.order-card-item .product {
+    font-weight: bold;
+    color: #111;
+}
+
+.order-card-item .qty {
+    color: #6b7280;
+}
+
+.order-card-item .amount {
+    color: #2563eb;
+    font-weight: bold;
+    text-align: right;
+}
 }
   </style>
 </head>
@@ -454,6 +525,8 @@ table {
       </table>
 
     </div>
+
+    <div class="orders-cards" id="ordersCards"></div>
 
   </div>
 
@@ -818,8 +891,13 @@ table {
     const list =
       document.getElementById("ordersList");
 
+    const cardsContainer =
+      document.getElementById("ordersCards");
+
 
     list.innerHTML = "";
+
+    cardsContainer.innerHTML = "";
 
 
     data.forEach(order => {
@@ -827,6 +905,8 @@ table {
       let products = "";
       let quantities = "";
       let amounts = "";
+
+      let cardItems = "";
 
 
       if (
@@ -862,6 +942,20 @@ table {
             </div>
           `;
 
+
+          cardItems += `
+            <div class="order-card-item">
+              <div class="product">${item.product_details || "-"}</div>
+              <div class="qty">${item.quantity !== null && item.quantity !== undefined ? "Qty: " + item.quantity : ""}</div>
+              <div class="amount">${
+                item.amount !== null &&
+                item.amount !== undefined
+                  ? "₹ " + Number(item.amount).toFixed(2)
+                  : "-"
+              }</div>
+            </div>
+          `;
+
         });
 
       } else {
@@ -871,6 +965,14 @@ table {
         quantities = "<div>-</div>";
 
         amounts = "<div>-</div>";
+
+        cardItems = `
+          <div class="order-card-item">
+            <div class="product">-</div>
+            <div class="qty"></div>
+            <div class="amount">-</div>
+          </div>
+        `;
 
       }
 
@@ -905,6 +1007,28 @@ table {
 
 
       list.appendChild(row);
+
+
+      const card =
+        document.createElement("div");
+
+
+      card.className = "order-card";
+
+
+      card.innerHTML = `
+
+        <div class="order-card-header">
+          <div class="order-card-party">${order.party_name || "-"}</div>
+          <div class="order-card-date">${order.order_date || "-"}</div>
+        </div>
+
+        ${cardItems}
+
+      `;
+
+
+      cardsContainer.appendChild(card);
 
     });
 
