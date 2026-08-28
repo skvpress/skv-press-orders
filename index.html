@@ -652,21 +652,11 @@ async function updateOrderStatus(orderId, newStatus) {
   if (oldStatus === newStatus) return; // No change needed
   
   try {
-    // Immediately update UI before server response
+    // Immediately update local cache
     order.status = newStatus;
     
-    // Update the specific card in Pipeline view
-    const card = document.querySelector(`.kanban-card[data-order-id="${orderId}"]`);
-    if (card) {
-      // Update status dropdown if visible
-      const statusSelect = card.querySelector('.kanban-status-select');
-      if (statusSelect) {
-        statusSelect.value = newStatus;
-      }
-    }
-    
-    // Efficiently update Pipeline columns without full re-render
-    updatePipelineColumns(orderId, oldStatus, newStatus);
+    // Update UI - re-render Pipeline to move card
+    renderKanban();
     
     // Update dashboard counts locally
     updateDashboardCounts();
@@ -677,7 +667,7 @@ async function updateOrderStatus(orderId, newStatus) {
         console.error(error);
         // Restore on error
         order.status = oldStatus;
-        updatePipelineColumns(orderId, newStatus, oldStatus);
+        renderKanban();
         updateDashboardCounts();
         alert("Error updating status. Restored previous status.");
       }
@@ -697,33 +687,6 @@ async function updateOrderStatus(orderId, newStatus) {
   }
 }
 
-function updatePipelineColumns(orderId, oldStatus, newStatus) {
-  // Find the old column and remove the card
-  const oldColumn = document.querySelector(`.kanban-column[data-stage="${oldStatus}"] .kanban-cards`);
-  const newColumn = document.querySelector(`.kanban-column[data-stage="${newStatus}"] .kanban-cards`);
-  
-  if (oldColumn) {
-    const card = oldColumn.querySelector(`.kanban-card[data-order-id="${orderId}"]`);
-    if (card) {
-      card.remove();
-    }
-    updateColumnCount(oldStatus);
-  }
-  
-  if (newColumn) {
-    const order = ordersData.find(o => o.id === orderId);
-    if (order) {
-      // Create and add card to new column
-      const cardHtml = createKanbanCardHtml(order);
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = cardHtml;
-      newColumn.appendChild(tempDiv.firstElementChild);
-      setupDragDrop(); // Re-attach drag listeners to new card
-    }
-    updateColumnCount(newStatus);
-  }
-}
-
 function updateColumnCount(status) {
   const column = document.querySelector(`.kanban-column[data-stage="${status}"]`);
   if (column) {
@@ -738,26 +701,7 @@ function updateColumnCount(status) {
 }
 
 function updateDashboardCounts() {
-  // Update dashboard counts from local cache without fetching
-  const summary = document.getElementById('dashboardSummary');
-  if (!summary) return;
-  
-  const total = ordersData.length;
-  const newEnquiry = ordersData.filter(o => (o.status || "New Enquiry") === "New Enquiry").length;
-  const ongoing = ordersData.filter(o => (o.status || "New Enquiry") === "Ongoing").length;
-  const completed = ordersData.filter(o => (o.status || "New Enquiry") === "Completed").length;
-  
-  // Update specific dashboard cards
-  const cards = summary.querySelectorAll('.dashboard-card');
-  cards.forEach(card => {
-    const count = card.querySelector('.dashboard-card-count');
-    if (count) {
-      if (card.textContent.includes('Total')) count.innerText = total;
-      else if (card.textContent.includes('New')) count.innerText = newEnquiry;
-      else if (card.textContent.includes('Ongoing')) count.innerText = ongoing;
-      else if (card.textContent.includes('Completed')) count.innerText = completed;
-    }
-  });
+  renderDashboard();
 }
 
 function createKanbanCardHtml(order) {
