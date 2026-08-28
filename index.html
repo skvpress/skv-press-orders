@@ -928,7 +928,10 @@ function clearForm() {
 }
 function printJobSheet() {
   const order = ordersData.find(o => o.id === currentOrderDetailsId);
-  if (!order) return;
+  if (!order) {
+    alert("Order not found");
+    return;
+  }
   
   let productsHtml = '';
   let total = 0;
@@ -1004,8 +1007,19 @@ function printJobSheet() {
       </div>
     </div>
   `;
-  document.getElementById('printJobSheet').innerHTML = printContent;
-  window.print();
+  
+  const printElement = document.getElementById('printJobSheet');
+  printElement.innerHTML = printContent;
+  printElement.style.display = 'block';
+  
+  // Small delay to ensure DOM is updated
+  setTimeout(() => {
+    window.print();
+    // Hide after print dialog closes
+    setTimeout(() => {
+      printElement.style.display = 'none';
+    }, 500);
+  }, 100);
 }
   </script>
 </body>
