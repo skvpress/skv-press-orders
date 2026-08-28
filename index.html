@@ -855,7 +855,8 @@ async function saveOrder() {
     }
     clearForm();
     loadOrders();
-    navigateTo('dashboard');
+    // Stay on New Order page instead of navigating to dashboard
+    navigateTo('neworder');
   } catch (error) {
     console.error(error);
     alert("Error saving order: " + error.message);
