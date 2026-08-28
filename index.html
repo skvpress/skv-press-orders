@@ -28,6 +28,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 15px;
     }
 
     header h1 {
@@ -65,6 +66,12 @@
     .secondary {
       background: #e5e7eb;
       color: #111;
+    }
+
+    .delete-btn {
+      background: #ef4444;
+      color: white;
+      padding: 10px;
     }
 
     .card {
@@ -109,12 +116,6 @@
       margin-bottom: 5px;
     }
 
-    .delete-btn {
-      background: #ef4444;
-      color: white;
-      padding: 10px;
-    }
-
     .total {
       text-align: right;
       font-size: 20px;
@@ -129,6 +130,10 @@
       margin-top: 20px;
     }
 
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -139,21 +144,45 @@
     td {
       padding: 12px;
       text-align: left;
+      vertical-align: top;
       border-bottom: 1px solid #e5e7eb;
     }
 
     th {
       background: #f9fafb;
+      white-space: nowrap;
+    }
+
+    .multi-line div {
+      padding: 4px 0;
+      min-height: 28px;
+      border-bottom: 1px solid #f1f1f1;
+    }
+
+    .multi-line div:last-child {
+      border-bottom: none;
     }
 
     @media (max-width: 700px) {
+
+      header {
+        padding: 14px;
+      }
 
       header h1 {
         font-size: 18px;
       }
 
+      header button {
+        padding: 9px 12px;
+      }
+
       .container {
         padding: 12px;
+      }
+
+      .card {
+        padding: 15px;
       }
 
       .form-grid {
@@ -177,6 +206,7 @@
 
       .delete-btn {
         grid-column: span 2;
+        width: 100%;
       }
 
       .actions {
@@ -187,29 +217,18 @@
         width: 100%;
       }
 
-      table,
-      thead,
-      tbody,
+      .table-wrapper {
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 650px;
+      }
+
       th,
-      td,
-      tr {
-        display: block;
-      }
-
-      thead {
-        display: none;
-      }
-
-      tr {
-        margin-bottom: 12px;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        padding: 10px;
-      }
-
       td {
-        border: none;
-        padding: 6px;
+        padding: 10px;
+        font-size: 14px;
       }
     }
   </style>
@@ -219,12 +238,16 @@
 
 <header>
   <h1>SKV Press Orders</h1>
+
   <button class="primary" onclick="showOrderForm()">
     + New Order
   </button>
 </header>
 
+
 <div class="container">
+
+  <!-- NEW ORDER FORM -->
 
   <div id="orderForm" class="card">
 
@@ -232,10 +255,12 @@
       <h2>New Order</h2>
     </div>
 
+
     <div class="form-grid">
 
       <div>
         <label>Party Name</label>
+
         <input
           type="text"
           id="partyName"
@@ -243,8 +268,10 @@
         />
       </div>
 
+
       <div>
         <label>Order Date</label>
+
         <input
           type="date"
           id="orderDate"
@@ -253,9 +280,12 @@
 
     </div>
 
+
     <br>
 
+
     <h3>Order Items</h3>
+
 
     <div class="items-header">
       <div>Product Details</div>
@@ -264,53 +294,89 @@
       <div></div>
     </div>
 
+
     <div id="itemsContainer"></div>
+
 
     <br>
 
-    <button class="secondary" onclick="addItem()">
+
+    <button
+      type="button"
+      class="secondary"
+      onclick="addItem()"
+    >
       + Add Item
     </button>
+
 
     <div class="total">
       Total: ₹ <span id="totalAmount">0.00</span>
     </div>
 
+
     <div class="actions">
-      <button class="secondary" onclick="clearForm()">
+
+      <button
+        type="button"
+        class="secondary"
+        onclick="clearForm()"
+      >
         Cancel
       </button>
 
-      <button class="primary" onclick="saveOrder()">
+
+      <button
+        type="button"
+        class="primary"
+        onclick="saveOrder()"
+      >
         Save Order
       </button>
+
     </div>
 
   </div>
 
 
+  <!-- ORDERS LIST -->
+
   <div class="card">
 
     <div class="top-bar">
+
       <h2>Orders</h2>
-      <button class="secondary" onclick="loadOrders()">
+
+      <button
+        class="secondary"
+        onclick="loadOrders()"
+      >
         Refresh
       </button>
+
     </div>
 
-    <table>
 
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Date</th>
-          <th>Party Name</th>
-        </tr>
-      </thead>
+    <div class="table-wrapper">
 
-      <tbody id="ordersList"></tbody>
+      <table>
 
-    </table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Party Name</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+
+
+        <tbody id="ordersList"></tbody>
+
+      </table>
+
+    </div>
 
   </div>
 
@@ -319,13 +385,14 @@
 
 <script>
 
-  // ==========================================
-  // SUPABASE CONFIGURATION
-  // ==========================================
+  /* =========================================
+     SUPABASE CONFIGURATION
+     ========================================= */
 
   const SUPABASE_URL = "https://vcyhaztkucppqfcvoari.supabase.co";
 
   const SUPABASE_KEY = "sb_publishable_KuuyyC6f2LL6T2M1F0V8OQ_wSVRNccO";
+
 
   const supabaseClient =
     supabase.createClient(
@@ -334,30 +401,36 @@
     );
 
 
-  // ==========================================
-  // INITIAL SETUP
-  // ==========================================
+  /* =========================================
+     INITIAL SETUP
+     ========================================= */
 
   document
     .getElementById("orderDate")
     .valueAsDate = new Date();
 
+
   addItem();
 
+  loadOrders();
 
-  // ==========================================
-  // ADD ITEM
-  // ==========================================
+
+  /* =========================================
+     ADD ITEM
+     ========================================= */
 
   function addItem() {
 
     const container =
       document.getElementById("itemsContainer");
 
+
     const row =
       document.createElement("div");
 
+
     row.className = "item-row";
+
 
     row.innerHTML = `
 
@@ -384,6 +457,7 @@
       />
 
       <button
+        type="button"
         class="delete-btn"
         onclick="removeItem(this)"
       >
@@ -392,53 +466,58 @@
 
     `;
 
+
     container.appendChild(row);
+
   }
 
 
-  // ==========================================
-  // REMOVE ITEM
-  // ==========================================
+  /* =========================================
+     REMOVE ITEM
+     ========================================= */
 
   function removeItem(button) {
 
-    const row =
-      button.parentElement;
+    const row = button.parentElement;
 
     row.remove();
 
     calculateTotal();
+
   }
 
 
-  // ==========================================
-  // TOTAL
-  // ==========================================
+  /* =========================================
+     CALCULATE TOTAL
+     ========================================= */
 
   function calculateTotal() {
 
     let total = 0;
 
+
     const amounts =
       document.querySelectorAll(".amount");
 
+
     amounts.forEach(amount => {
 
-      total +=
-        Number(amount.value || 0);
+      total += Number(amount.value || 0);
 
     });
+
 
     document
       .getElementById("totalAmount")
       .innerText =
         total.toFixed(2);
+
   }
 
 
-  // ==========================================
-  // SAVE ORDER
-  // ==========================================
+  /* =========================================
+     SAVE ORDER
+     ========================================= */
 
   async function saveOrder() {
 
@@ -447,6 +526,7 @@
         .getElementById("partyName")
         .value
         .trim();
+
 
     const orderDate =
       document
@@ -459,50 +539,9 @@
       alert("Please enter Party Name");
 
       return;
+
     }
 
-
-    // STEP 1
-    // INSERT INTO ORDERS
-
-    const {
-
-      data: order,
-
-      error: orderError
-
-    } = await supabaseClient
-
-      .from("orders")
-
-      .insert({
-
-        party_name: partyName,
-
-        order_date: orderDate
-
-      })
-
-      .select()
-
-      .single();
-
-
-    if (orderError) {
-
-      console.error(orderError);
-
-      alert(
-        "Error saving order: " +
-        orderError.message
-      );
-
-      return;
-    }
-
-
-    // STEP 2
-    // GET ITEMS
 
     const rows =
       document.querySelectorAll(".item-row");
@@ -520,35 +559,35 @@
           .trim();
 
 
-      const quantity =
-        Number(
-          row
-            .querySelector(".quantity")
-            .value
-        );
+      const quantityValue =
+        row
+          .querySelector(".quantity")
+          .value;
 
 
-      const amount =
-        Number(
-          row
-            .querySelector(".amount")
-            .value
-        );
+      const amountValue =
+        row
+          .querySelector(".amount")
+          .value;
 
 
       if (product) {
 
         items.push({
 
-          order_id: order.id,
-
           product_details: product,
 
-          quantity: quantity || 1,
+          quantity:
+            quantityValue
+              ? Number(quantityValue)
+              : null,
 
-          amount: amount || 0,
+          amount:
+            amountValue
+              ? Number(amountValue)
+              : null,
 
-          status: "Pending"
+          status: "New Enquiry"
 
         });
 
@@ -557,40 +596,96 @@
     });
 
 
-    // STEP 3
-    // INSERT ITEMS
+    if (items.length === 0) {
 
-    if (items.length > 0) {
+      alert("Please add at least one product");
 
-      const {
-
-        error: itemsError
-
-      } = await supabaseClient
-
-        .from("order_items")
-
-        .insert(items);
-
-
-      if (itemsError) {
-
-        console.error(itemsError);
-
-        alert(
-          "Order saved, but item save failed: " +
-          itemsError.message
-        );
-
-        return;
-      }
+      return;
 
     }
 
 
-    alert(
-      "Order Saved Successfully!"
-    );
+    /* SAVE MAIN ORDER */
+
+    const {
+      data: order,
+      error: orderError
+    } = await supabaseClient
+
+      .from("orders")
+
+      .insert({
+        party_name: partyName,
+        order_date: orderDate
+      })
+
+      .select()
+
+      .single();
+
+
+    if (orderError) {
+
+      console.error(orderError);
+
+      alert(
+        "Error saving order: " +
+        orderError.message
+      );
+
+      return;
+
+    }
+
+
+    /* ADD ORDER ID TO EACH ITEM */
+
+    const itemsToSave =
+      items.map(item => ({
+
+        order_id: order.id,
+
+        product_details:
+          item.product_details,
+
+        quantity:
+          item.quantity,
+
+        amount:
+          item.amount,
+
+        status:
+          item.status
+
+      }));
+
+
+    /* SAVE ORDER ITEMS */
+
+    const {
+      error: itemsError
+    } = await supabaseClient
+
+      .from("order_items")
+
+      .insert(itemsToSave);
+
+
+    if (itemsError) {
+
+      console.error(itemsError);
+
+      alert(
+        "Order saved, but product details failed: " +
+        itemsError.message
+      );
+
+      return;
+
+    }
+
+
+    alert("Order Saved Successfully!");
 
 
     clearForm();
@@ -600,23 +695,31 @@
   }
 
 
-  // ==========================================
-  // LOAD ORDERS
-  // ==========================================
+  /* =========================================
+     LOAD ORDERS
+     ONE PARTY + ONE DATE = ONE ROW
+     ========================================= */
 
   async function loadOrders() {
 
     const {
-
       data,
-
       error
-
     } = await supabaseClient
 
       .from("orders")
 
-      .select("*")
+      .select(`
+        id,
+        order_date,
+        party_name,
+        order_items (
+          id,
+          product_details,
+          quantity,
+          amount
+        )
+      `)
 
       .order(
         "id",
@@ -631,6 +734,7 @@
       console.error(error);
 
       return;
+
     }
 
 
@@ -643,17 +747,82 @@
 
     data.forEach(order => {
 
+      let products = "";
+      let quantities = "";
+      let amounts = "";
+
+
+      if (
+        order.order_items &&
+        order.order_items.length > 0
+      ) {
+
+        order.order_items.forEach(item => {
+
+          products += `
+            <div>
+              ${item.product_details || "-"}
+            </div>
+          `;
+
+
+          quantities += `
+            <div>
+              ${item.quantity ?? "-"}
+            </div>
+          `;
+
+
+          amounts += `
+            <div>
+              ${
+                item.amount !== null &&
+                item.amount !== undefined
+                  ? "₹ " +
+                    Number(item.amount).toFixed(2)
+                  : "-"
+              }
+            </div>
+          `;
+
+        });
+
+      } else {
+
+        products = "<div>-</div>";
+
+        quantities = "<div>-</div>";
+
+        amounts = "<div>-</div>";
+
+      }
+
+
       const row =
         document.createElement("tr");
 
 
       row.innerHTML = `
 
-        <td>${order.id}</td>
+        <td>
+          ${order.order_date || "-"}
+        </td>
 
-        <td>${order.order_date}</td>
+        <td>
+          ${order.party_name || "-"}
+        </td>
 
-        <td>${order.party_name}</td>
+        <td class="multi-line">
+          ${products}
+        </td>
+
+        <td class="multi-line">
+          ${quantities}
+        </td>
+
+        <td class="multi-line">
+          ${amounts}
+        </td>
 
       `;
 
@@ -665,9 +834,9 @@
   }
 
 
-  // ==========================================
-  // CLEAR FORM
-  // ==========================================
+  /* =========================================
+     CLEAR FORM
+     ========================================= */
 
   function clearForm() {
 
@@ -689,10 +858,15 @@
 
     addItem();
 
+
     calculateTotal();
 
   }
 
+
+  /* =========================================
+     SCROLL TO ORDER FORM
+     ========================================= */
 
   function showOrderForm() {
 
@@ -703,11 +877,6 @@
       });
 
   }
-
-
-  // LOAD ORDERS WHEN PAGE OPENS
-
-  loadOrders();
 
 </script>
 
