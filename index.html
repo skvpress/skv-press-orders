@@ -1047,12 +1047,12 @@ function shareToWhatsApp() {
     order.order_items.forEach(item => {
       const amt = item.amount !== null && item.amount !== undefined ? Number(item.amount) : 0;
       total += amt;
-      productsText += `\n• ${item.product_details || '-'} (Qty: ${item.quantity || 0}, ₹${amt.toFixed(2)})`;
+      productsText += `\n* ${item.product_details || '-'} (Qty: ${item.quantity || 0}, ₹${amt.toFixed(2)})`;
     });
   }
   
-  // Create message
-  const message = `📋 *SKV PRESS ORDERS*\n\n*Order Details:*\nParty: ${order.party_name || '-'}\nDate: ${order.order_date || '-'}\nStatus: ${order.status || 'New Enquiry'}\n\n*Products:*${productsText || '\nNo products'}\n\n*Grand Total: ₹${total.toFixed(2)}*${order.notes ? `\n\n*Notes:* ${order.notes}` : ''}\n\n---\nSent from SKV Press Orders`;
+  // Create simple message
+  const message = `Order Details:\nParty: ${order.party_name || '-'}\nProducts:${productsText || '\nNo products'}\nGrand Total: ₹${total.toFixed(2)}`;
   
   // Encode message for URL
   const encodedMessage = encodeURIComponent(message);
