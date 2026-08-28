@@ -266,21 +266,25 @@
     }
 
     /* Product Row */
-    .item-row {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 8px;
-    }
+.item-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr auto !important;
+    gap: 8px;
+}
 
-    .item-row input:first-child {
-        grid-column: 1 / -1;
-    }
+.item-row input:first-child {
+    grid-column: 1 / -1;
+}
 
-    /* Remove button */
-    .remove-btn {
-        grid-column: 1 / -1;
-        width: 100%;
-    }
+/* Remove button */
+
+.remove-btn {
+    grid-column: auto !important;
+    width: 44px !important;
+    min-width: 44px;
+    height: 42px;
+    padding: 0;
+}
 
     /* Buttons */
     .actions {
