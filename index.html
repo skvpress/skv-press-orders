@@ -228,6 +228,46 @@
       padding: 10px;
     }
 
+    /* =========================
+       DASHBOARD SUMMARY
+    ========================= */
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+    }
+
+    .dashboard-card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border-left: 5px solid #2563eb;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .dashboard-card-icon {
+      font-size: 22px;
+    }
+
+    .dashboard-card-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .dashboard-card-count {
+      font-size: 32px;
+      font-weight: bold;
+      color: #111;
+      line-height: 1;
+    }
+
     .card {
       background: white;
       border-radius: 10px;
@@ -553,6 +593,20 @@ table {
 .view-toggle button {
     flex: 1;
 }
+
+/* Dashboard mobile */
+.dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.dashboard-card {
+    padding: 12px;
+}
+
+.dashboard-card-count {
+    font-size: 26px;
+}
 }
   </style>
 </head>
@@ -569,6 +623,63 @@ table {
 
 
 <div class="container">
+
+  <!-- DASHBOARD SUMMARY -->
+
+  <div class="card">
+
+    <div class="top-bar">
+      <h2>Dashboard</h2>
+    </div>
+
+    <div class="dashboard-grid" id="dashboardGrid">
+
+      <div class="dashboard-card" style="border-left-color:#2563eb;">
+        <div class="dashboard-card-icon">🆕</div>
+        <div class="dashboard-card-title">New Orders</div>
+        <div class="dashboard-card-count" id="dashNewEnquiry">0</div>
+      </div>
+
+      <div class="dashboard-card" style="border-left-color:#8b5cf6;">
+        <div class="dashboard-card-icon">🎨</div>
+        <div class="dashboard-card-title">Design Pending</div>
+        <div class="dashboard-card-count" id="dashDesignPending">0</div>
+      </div>
+
+      <div class="dashboard-card" style="border-left-color:#f59e0b;">
+        <div class="dashboard-card-icon">⏳</div>
+        <div class="dashboard-card-title">Waiting for Approval</div>
+        <div class="dashboard-card-count" id="dashApprovalPending">0</div>
+      </div>
+
+      <div class="dashboard-card" style="border-left-color:#0ea5e9;">
+        <div class="dashboard-card-icon">🖨️</div>
+        <div class="dashboard-card-title">Printing Jobs</div>
+        <div class="dashboard-card-count" id="dashPrintingJobs">0</div>
+      </div>
+
+      <div class="dashboard-card" style="border-left-color:#14b8a6;">
+        <div class="dashboard-card-icon">✂️</div>
+        <div class="dashboard-card-title">Finishing Jobs</div>
+        <div class="dashboard-card-count" id="dashFinishingJobs">0</div>
+      </div>
+
+      <div class="dashboard-card" style="border-left-color:#f97316;">
+        <div class="dashboard-card-icon">📦</div>
+        <div class="dashboard-card-title">Ready for Delivery</div>
+        <div class="dashboard-card-count" id="dashReadyDelivery">0</div>
+      </div>
+
+      <div class="dashboard-card" style="border-left-color:#22c55e;">
+        <div class="dashboard-card-icon">🚚</div>
+        <div class="dashboard-card-title">Completed Orders</div>
+        <div class="dashboard-card-count" id="dashCompleted">0</div>
+      </div>
+
+    </div>
+
+  </div>
+
 
   <!-- NEW ORDER FORM -->
 
@@ -1400,6 +1511,85 @@ table {
 
     renderKanban();
 
+    renderDashboard();
+
+  }
+
+
+  /* =========================================
+     RENDER DASHBOARD SUMMARY
+     ========================================= */
+
+  function renderDashboard() {
+
+    const counts = {
+      newEnquiry: 0,
+      designPending: 0,
+      approvalPending: 0,
+      printingJobs: 0,
+      finishingJobs: 0,
+      readyDelivery: 0,
+      completed: 0
+    };
+
+
+    ordersData.forEach(order => {
+
+      const status = order.status || "New Enquiry";
+
+
+      if (status === "New Enquiry") {
+
+        counts.newEnquiry++;
+
+      } else if (status === "Design in Progress") {
+
+        counts.designPending++;
+
+      } else if (status === "Customer Approval Pending") {
+
+        counts.approvalPending++;
+
+      } else if (
+        status === "Master Complete" ||
+        status === "Printing in Progress"
+      ) {
+
+        counts.printingJobs++;
+
+      } else if (status === "Finishing / Binding") {
+
+        counts.finishingJobs++;
+
+      } else if (status === "Ready for Delivery") {
+
+        counts.readyDelivery++;
+
+      } else if (status === "Delivered / Completed") {
+
+        counts.completed++;
+
+      }
+
+      /* "On Hold" and "Cancelled" are intentionally excluded */
+
+    });
+
+
+    document.getElementById("dashNewEnquiry").innerText = counts.newEnquiry;
+
+    document.getElementById("dashDesignPending").innerText = counts.designPending;
+
+    document.getElementById("dashApprovalPending").innerText = counts.approvalPending;
+
+    document.getElementById("dashPrintingJobs").innerText = counts.printingJobs;
+
+    document.getElementById("dashFinishingJobs").innerText = counts.finishingJobs;
+
+    document.getElementById("dashReadyDelivery").innerText = counts.readyDelivery;
+
+    document.getElementById("dashCompleted").innerText = counts.completed;
+
   }
 
 
@@ -1598,6 +1788,8 @@ table {
 
 
     renderKanban();
+
+    renderDashboard();
 
   }
 
