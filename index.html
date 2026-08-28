@@ -396,7 +396,13 @@ function navigateTo(section) {
   document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active'); });
   const element = document.getElementById(section);
   if (element) { element.classList.add('active'); }
-  event.target.classList.add('active');
+  // Highlight active nav button by finding the one that navigates to this section
+  const navButtons = document.querySelectorAll('.nav-btn');
+  navButtons.forEach(btn => {
+    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${section}'`)) {
+      btn.classList.add('active');
+    }
+  });
   const titles = { 'dashboard': 'Dashboard', 'neworder': 'New Order', 'listview': 'List View', 'pipeline': 'Pipeline' };
   document.getElementById('pageTitle').innerText = titles[section] || 'Dashboard';
   closeSidebar();
@@ -457,15 +463,18 @@ function renderDashboard() {
     const count = ordersData.filter(o => (o.status || "New Enquiry") === item.key).length;
     const card = document.createElement('div');
     card.className = 'dashboard-card' + (currentFilter === item.key ? ' filtered' : '');
-    card.onclick = () => filterByStatus(item.key, item.displayKey);
+    card.onclick = function() { filterByStatus(item.key, item.displayKey, this); };
     card.innerHTML = `<div class="dashboard-card-icon">${item.icon}</div><div class="dashboard-card-title">${item.title}</div><div class="dashboard-card-count">${count}</div>`;
     summaryContainer.appendChild(card);
   });
 }
-function filterByStatus(statusKey, displayName) {
+function filterByStatus(statusKey, displayName, eventElement) {
   currentFilter = statusKey;
   document.querySelectorAll('.dashboard-card').forEach(card => { card.classList.remove('filtered'); });
-  event.target.closest('.dashboard-card').classList.add('filtered');
+  if (eventElement) {
+    const card = eventElement.closest('.dashboard-card');
+    if (card) card.classList.add('filtered');
+  }
   document.getElementById('filterInfo').style.display = 'flex';
   document.getElementById('filterText').innerText = `Showing ${displayName} orders`;
   navigateTo('listview');
