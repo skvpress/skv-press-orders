@@ -101,6 +101,133 @@
       font-size: 13px;
     }
 
+    .view-toggle {
+      display: flex;
+      gap: 8px;
+    }
+
+    .view-toggle button {
+      padding: 8px 14px;
+      font-size: 14px;
+    }
+
+    .view-toggle button.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    /* =========================
+       KANBAN PIPELINE
+    ========================= */
+
+    .kanban-board {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .kanban-column {
+      background: #eef1f5;
+      border-radius: 10px;
+      min-width: 260px;
+      max-width: 260px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      max-height: 75vh;
+    }
+
+    .kanban-column.special {
+      background: #f3e8e8;
+    }
+
+    .kanban-column-header {
+      padding: 12px;
+      font-weight: bold;
+      font-size: 14px;
+      border-bottom: 2px solid #d1d5db;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: inherit;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .kanban-count {
+      background: white;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12px;
+      color: #374151;
+    }
+
+    .kanban-cards {
+      padding: 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .kanban-card {
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .kanban-card-party {
+      font-weight: bold;
+      font-size: 15px;
+      color: #111;
+    }
+
+    .kanban-card-date {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .kanban-card-products {
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .kanban-card-products div {
+      display: flex;
+      justify-content: space-between;
+      padding: 2px 0;
+      color: #374151;
+    }
+
+    .kanban-card-total {
+      text-align: right;
+      font-weight: bold;
+      color: #2563eb;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .kanban-status-select {
+      width: 100%;
+      padding: 7px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 13px;
+      background: white;
+    }
+
+    .kanban-empty {
+      font-size: 13px;
+      color: #9ca3af;
+      text-align: center;
+      padding: 10px;
+    }
+
     .card {
       background: white;
       border-radius: 10px;
@@ -409,6 +536,23 @@ table {
     font-weight: bold;
     text-align: right;
 }
+
+/* Kanban mobile */
+.kanban-board {
+    gap: 10px;
+    scroll-snap-type: x mandatory;
+}
+
+.kanban-column {
+    min-width: 82vw;
+    max-width: 82vw;
+    max-height: 65vh;
+    scroll-snap-align: start;
+}
+
+.view-toggle button {
+    flex: 1;
+}
 }
   </style>
 </head>
@@ -519,7 +663,7 @@ table {
   </div>
 
 
-  <!-- ORDERS LIST -->
+  <!-- ORDERS LIST / PIPELINE -->
 
   <div class="card">
 
@@ -527,39 +671,72 @@ table {
 
       <h2>Orders</h2>
 
-      <button
-        class="secondary"
-        onclick="loadOrders()"
-      >
-        Refresh
-      </button>
+      <div class="view-toggle">
+
+        <button
+          type="button"
+          id="listViewBtn"
+          class="secondary active"
+          onclick="showListView()"
+        >
+          List View
+        </button>
+
+        <button
+          type="button"
+          id="pipelineViewBtn"
+          class="secondary"
+          onclick="showPipelineView()"
+        >
+          Pipeline View
+        </button>
+
+        <button
+          class="secondary"
+          onclick="loadOrders()"
+        >
+          Refresh
+        </button>
+
+      </div>
 
     </div>
 
 
-    <div class="table-wrapper">
+    <div id="listViewContainer">
 
-      <table>
+      <div class="table-wrapper">
 
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Party Name</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Amount</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+        <table>
+
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Party Name</th>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
 
 
-        <tbody id="ordersList"></tbody>
+          <tbody id="ordersList"></tbody>
 
-      </table>
+        </table>
+
+      </div>
+
+      <div class="orders-cards" id="ordersCards"></div>
 
     </div>
 
-    <div class="orders-cards" id="ordersCards"></div>
+
+    <div id="kanbanViewContainer" style="display: none;">
+
+      <div class="kanban-board" id="kanbanBoard"></div>
+
+    </div>
 
   </div>
 
@@ -591,6 +768,25 @@ table {
   let editingOrderId = null;
 
   let ordersData = [];
+
+
+  /* =========================================
+     PIPELINE STAGES
+     ========================================= */
+
+  const PIPELINE_STAGES = [
+    { key: "New Enquiry", emoji: "🆕", special: false },
+    { key: "Design in Progress", emoji: "🖥️", special: false },
+    { key: "Customer Approval Pending", emoji: "⏳", special: false },
+    { key: "Design Approved", emoji: "👍", special: false },
+    { key: "Master Complete", emoji: "🖨️", special: false },
+    { key: "Printing in Progress", emoji: "🖨️", special: false },
+    { key: "Finishing / Binding", emoji: "✂️", special: false },
+    { key: "Ready for Delivery", emoji: "📦", special: false },
+    { key: "Delivered / Completed", emoji: "🚚", special: false },
+    { key: "On Hold", emoji: "⏸️", special: true },
+    { key: "Cancelled", emoji: "❌", special: true }
+  ];
 
 
   /* =========================================
@@ -883,7 +1079,8 @@ table {
 
         .insert({
           party_name: partyName,
-          order_date: orderDate
+          order_date: orderDate,
+          status: "New Enquiry"
         })
 
         .select()
@@ -990,6 +1187,7 @@ table {
         id,
         order_date,
         party_name,
+        status,
         order_items (
           id,
           product_details,
@@ -1198,6 +1396,263 @@ table {
       cardsContainer.appendChild(card);
 
     });
+
+
+    renderKanban();
+
+  }
+
+
+  /* =========================================
+     RENDER KANBAN PIPELINE
+     ========================================= */
+
+  function renderKanban() {
+
+    const board =
+      document.getElementById("kanbanBoard");
+
+
+    if (!board) {
+
+      return;
+
+    }
+
+
+    board.innerHTML = "";
+
+
+    PIPELINE_STAGES.forEach(stage => {
+
+      const ordersInStage =
+        ordersData.filter(order =>
+          (order.status || "New Enquiry") === stage.key
+        );
+
+
+      const column =
+        document.createElement("div");
+
+
+      column.className =
+        "kanban-column" +
+        (stage.special ? " special" : "");
+
+
+      let cardsHtml = "";
+
+
+      if (ordersInStage.length === 0) {
+
+        cardsHtml =
+          `<div class="kanban-empty">No orders</div>`;
+
+      } else {
+
+        ordersInStage.forEach(order => {
+
+          let productsHtml = "";
+
+          let total = 0;
+
+
+          if (order.order_items && order.order_items.length > 0) {
+
+            order.order_items.forEach(item => {
+
+              const amt =
+                item.amount !== null &&
+                item.amount !== undefined
+                  ? Number(item.amount)
+                  : 0;
+
+
+              total += amt;
+
+
+              productsHtml += `
+                <div>
+                  <span>${item.product_details || "-"}${item.quantity ? " (Qty: " + item.quantity + ")" : ""}</span>
+                  <span>${
+                    item.amount !== null &&
+                    item.amount !== undefined
+                      ? "₹" + amt.toFixed(2)
+                      : "-"
+                  }</span>
+                </div>
+              `;
+
+            });
+
+          } else {
+
+            productsHtml = `<div>No products</div>`;
+
+          }
+
+
+          const optionsHtml =
+            PIPELINE_STAGES.map(s =>
+              `<option value="${s.key}" ${
+                (order.status || "New Enquiry") === s.key
+                  ? "selected"
+                  : ""
+              }>${s.emoji} ${s.key}</option>`
+            ).join("");
+
+
+          cardsHtml += `
+
+            <div class="kanban-card">
+
+              <div class="kanban-card-party">${order.party_name || "-"}</div>
+
+              <div class="kanban-card-date">${order.order_date || "-"}</div>
+
+              <div class="kanban-card-products">
+                ${productsHtml}
+              </div>
+
+              <div class="kanban-card-total">Total: ₹${total.toFixed(2)}</div>
+
+              <select
+                class="kanban-status-select"
+                onchange="updateOrderStatus(${order.id}, this.value)"
+              >
+                ${optionsHtml}
+              </select>
+
+            </div>
+
+          `;
+
+        });
+
+      }
+
+
+      column.innerHTML = `
+
+        <div class="kanban-column-header">
+          <span>${stage.emoji} ${stage.key}</span>
+          <span class="kanban-count">${ordersInStage.length}</span>
+        </div>
+
+        <div class="kanban-cards">
+          ${cardsHtml}
+        </div>
+
+      `;
+
+
+      board.appendChild(column);
+
+    });
+
+  }
+
+
+  /* =========================================
+     UPDATE ORDER STATUS (KANBAN)
+     ========================================= */
+
+  async function updateOrderStatus(orderId, newStatus) {
+
+    const {
+      error
+    } = await supabaseClient
+
+      .from("orders")
+
+      .update({ status: newStatus })
+
+      .eq("id", orderId);
+
+
+    if (error) {
+
+      console.error(error);
+
+      alert(
+        "Error updating status: " +
+        error.message
+      );
+
+      loadOrders();
+
+      return;
+
+    }
+
+
+    const order =
+      ordersData.find(o => o.id === orderId);
+
+
+    if (order) {
+
+      order.status = newStatus;
+
+    }
+
+
+    renderKanban();
+
+  }
+
+
+  /* =========================================
+     VIEW TOGGLE (LIST / PIPELINE)
+     ========================================= */
+
+  function showListView() {
+
+    document
+      .getElementById("listViewContainer")
+      .style.display = "";
+
+
+    document
+      .getElementById("kanbanViewContainer")
+      .style.display = "none";
+
+
+    document
+      .getElementById("listViewBtn")
+      .classList.add("active");
+
+
+    document
+      .getElementById("pipelineViewBtn")
+      .classList.remove("active");
+
+  }
+
+
+  function showPipelineView() {
+
+    document
+      .getElementById("listViewContainer")
+      .style.display = "none";
+
+
+    document
+      .getElementById("kanbanViewContainer")
+      .style.display = "";
+
+
+    document
+      .getElementById("pipelineViewBtn")
+      .classList.add("active");
+
+
+    document
+      .getElementById("listViewBtn")
+      .classList.remove("active");
+
+
+    renderKanban();
 
   }
 
