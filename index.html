@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>SKV Press Orders</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    header {
+      background: #1f2937;
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 22px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 6px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .secondary {
+      background: #e5e7eb;
+      color: #111;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .items-header,
+    .item-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 50px;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .items-header {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .delete-btn {
+      background: #ef4444;
+      color: white;
+      padding: 10px;
+    }
+
+    .total {
+      text-align: right;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background: #f9fafb;
+    }
+
+    @media (max-width: 700px) {
+
+      header h1 {
+        font-size: 18px;
+      }
+
+      .container {
+        padding: 12px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .items-header {
+        display: none;
+      }
+
+      .item-row {
+        grid-template-columns: 1fr 1fr;
+        background: #f9fafb;
+        padding: 12px;
+        border-radius: 8px;
+      }
+
+      .item-row input:first-child {
+        grid-column: span 2;
+      }
+
+      .delete-btn {
+        grid-column: span 2;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .actions button {
+        width: 100%;
+      }
+
+      table,
+      thead,
+      tbody,
+      th,
+      td,
+      tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        margin-bottom: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 10px;
+      }
+
+      td {
+        border: none;
+        padding: 6px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>SKV Press Orders</h1>
+  <button class="primary" onclick="showOrderForm()">
+    + New Order
+  </button>
+</header>
+
+<div class="container">
+
+  <div id="orderForm" class="card">
+
+    <div class="top-bar">
+      <h2>New Order</h2>
+    </div>
+
+    <div class="form-grid">
+
+      <div>
+        <label>Party Name</label>
+        <input
+          type="text"
+          id="partyName"
+          placeholder="Enter party name"
+        />
+      </div>
+
+      <div>
+        <label>Order Date</label>
+        <input
+          type="date"
+          id="orderDate"
+        />
+      </div>
+
+    </div>
+
+    <br>
+
+    <h3>Order Items</h3>
+
+    <div class="items-header">
+      <div>Product Details</div>
+      <div>Quantity</div>
+      <div>Amount</div>
+      <div></div>
+    </div>
+
+    <div id="itemsContainer"></div>
+
+    <br>
+
+    <button class="secondary" onclick="addItem()">
+      + Add Item
+    </button>
+
+    <div class="total">
+      Total: ₹ <span id="totalAmount">0.00</span>
+    </div>
+
+    <div class="actions">
+      <button class="secondary" onclick="clearForm()">
+        Cancel
+      </button>
+
+      <button class="primary" onclick="saveOrder()">
+        Save Order
+      </button>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="top-bar">
+      <h2>Orders</h2>
+      <button class="secondary" onclick="loadOrders()">
+        Refresh
+      </button>
+    </div>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Date</th>
+          <th>Party Name</th>
+        </tr>
+      </thead>
+
+      <tbody id="ordersList"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  // ==========================================
+  // SUPABASE CONFIGURATION
+  // ==========================================
+
+  const SUPABASE_URL = "YOUR_SUPABASE_URL";
+
+  const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY";
+
+  const supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  // ==========================================
+  // INITIAL SETUP
+  // ==========================================
+
+  document
+    .getElementById("orderDate")
+    .valueAsDate = new Date();
+
+  addItem();
+
+
+  // ==========================================
+  // ADD ITEM
+  // ==========================================
+
+  function addItem() {
+
+    const container =
+      document.getElementById("itemsContainer");
+
+    const row =
+      document.createElement("div");
+
+    row.className = "item-row";
+
+    row.innerHTML = `
+
+      <input
+        type="text"
+        class="product"
+        placeholder="Product details"
+      />
+
+      <input
+        type="number"
+        class="quantity"
+        placeholder="Qty"
+        min="1"
+      />
+
+      <input
+        type="number"
+        class="amount"
+        placeholder="Amount"
+        min="0"
+        step="0.01"
+        oninput="calculateTotal()"
+      />
+
+      <button
+        class="delete-btn"
+        onclick="removeItem(this)"
+      >
+        ✕
+      </button>
+
+    `;
+
+    container.appendChild(row);
+  }
+
+
+  // ==========================================
+  // REMOVE ITEM
+  // ==========================================
+
+  function removeItem(button) {
+
+    const row =
+      button.parentElement;
+
+    row.remove();
+
+    calculateTotal();
+  }
+
+
+  // ==========================================
+  // TOTAL
+  // ==========================================
+
+  function calculateTotal() {
+
+    let total = 0;
+
+    const amounts =
+      document.querySelectorAll(".amount");
+
+    amounts.forEach(amount => {
+
+      total +=
+        Number(amount.value || 0);
+
+    });
+
+    document
+      .getElementById("totalAmount")
+      .innerText =
+        total.toFixed(2);
+  }
+
+
+  // ==========================================
+  // SAVE ORDER
+  // ==========================================
+
+  async function saveOrder() {
+
+    const partyName =
+      document
+        .getElementById("partyName")
+        .value
+        .trim();
+
+    const orderDate =
+      document
+        .getElementById("orderDate")
+        .value;
+
+
+    if (!partyName) {
+
+      alert("Please enter Party Name");
+
+      return;
+    }
+
+
+    // STEP 1
+    // INSERT INTO ORDERS
+
+    const {
+
+      data: order,
+
+      error: orderError
+
+    } = await supabaseClient
+
+      .from("orders")
+
+      .insert({
+
+        party_name: partyName,
+
+        order_date: orderDate
+
+      })
+
+      .select()
+
+      .single();
+
+
+    if (orderError) {
+
+      console.error(orderError);
+
+      alert(
+        "Error saving order: " +
+        orderError.message
+      );
+
+      return;
+    }
+
+
+    // STEP 2
+    // GET ITEMS
+
+    const rows =
+      document.querySelectorAll(".item-row");
+
+
+    const items = [];
+
+
+    rows.forEach(row => {
+
+      const product =
+        row
+          .querySelector(".product")
+          .value
+          .trim();
+
+
+      const quantity =
+        Number(
+          row
+            .querySelector(".quantity")
+            .value
+        );
+
+
+      const amount =
+        Number(
+          row
+            .querySelector(".amount")
+            .value
+        );
+
+
+      if (product) {
+
+        items.push({
+
+          order_id: order.id,
+
+          product_details: product,
+
+          quantity: quantity || 1,
+
+          amount: amount || 0,
+
+          status: "Pending"
+
+        });
+
+      }
+
+    });
+
+
+    // STEP 3
+    // INSERT ITEMS
+
+    if (items.length > 0) {
+
+      const {
+
+        error: itemsError
+
+      } = await supabaseClient
+
+        .from("order_items")
+
+        .insert(items);
+
+
+      if (itemsError) {
+
+        console.error(itemsError);
+
+        alert(
+          "Order saved, but item save failed: " +
+          itemsError.message
+        );
+
+        return;
+      }
+
+    }
+
+
+    alert(
+      "Order Saved Successfully!"
+    );
+
+
+    clearForm();
+
+    loadOrders();
+
+  }
+
+
+  // ==========================================
+  // LOAD ORDERS
+  // ==========================================
+
+  async function loadOrders() {
+
+    const {
+
+      data,
+
+      error
+
+    } = await supabaseClient
+
+      .from("orders")
+
+      .select("*")
+
+      .order(
+        "id",
+        {
+          ascending: false
+        }
+      );
+
+
+    if (error) {
+
+      console.error(error);
+
+      return;
+    }
+
+
+    const list =
+      document.getElementById("ordersList");
+
+
+    list.innerHTML = "";
+
+
+    data.forEach(order => {
+
+      const row =
+        document.createElement("tr");
+
+
+      row.innerHTML = `
+
+        <td>${order.id}</td>
+
+        <td>${order.order_date}</td>
+
+        <td>${order.party_name}</td>
+
+      `;
+
+
+      list.appendChild(row);
+
+    });
+
+  }
+
+
+  // ==========================================
+  // CLEAR FORM
+  // ==========================================
+
+  function clearForm() {
+
+    document
+      .getElementById("partyName")
+      .value = "";
+
+
+    document
+      .getElementById("orderDate")
+      .valueAsDate =
+        new Date();
+
+
+    document
+      .getElementById("itemsContainer")
+      .innerHTML = "";
+
+
+    addItem();
+
+    calculateTotal();
+
+  }
+
+
+  function showOrderForm() {
+
+    document
+      .getElementById("orderForm")
+      .scrollIntoView({
+        behavior: "smooth"
+      });
+
+  }
+
+
+  // LOAD ORDERS WHEN PAGE OPENS
+
+  loadOrders();
+
+</script>
+
+</body>
+</html>
