@@ -363,6 +363,7 @@
         <button class="edit-btn" id="editOrderDetailsBtn" onclick="editOrderFromDetails()">Edit</button>
         <button class="delete-btn" id="deleteOrderDetailsBtn" onclick="deleteOrderFromDetails()">Delete</button>
         <button class="primary print-hide" onclick="printJobSheet()">🖨️ Print Job Sheet</button>
+        <button class="primary" style="background: #25D366;" onclick="shareToWhatsApp()">💬 Share to WhatsApp</button>
       </div>
     </div>
   </div>
@@ -1030,6 +1031,34 @@ function printJobSheet() {
   setTimeout(() => {
     printElement.style.display = 'none';
   }, 2000);
+}
+
+function shareToWhatsApp() {
+  const order = ordersData.find(o => o.id === currentOrderDetailsId);
+  if (!order) {
+    alert("Order not found");
+    return;
+  }
+  
+  // Format products list
+  let productsText = '';
+  let total = 0;
+  if (order.order_items && order.order_items.length > 0) {
+    order.order_items.forEach(item => {
+      const amt = item.amount !== null && item.amount !== undefined ? Number(item.amount) : 0;
+      total += amt;
+      productsText += `\n• ${item.product_details || '-'} (Qty: ${item.quantity || 0}, ₹${amt.toFixed(2)})`;
+    });
+  }
+  
+  // Create message
+  const message = `📋 *SKV PRESS ORDERS*\n\n*Order Details:*\nParty: ${order.party_name || '-'}\nDate: ${order.order_date || '-'}\nStatus: ${order.status || 'New Enquiry'}\n\n*Products:*${productsText || '\nNo products'}\n\n*Grand Total: ₹${total.toFixed(2)}*${order.notes ? `\n\n*Notes:* ${order.notes}` : ''}\n\n---\nSent from SKV Press Orders`;
+  
+  // Encode message for URL
+  const encodedMessage = encodeURIComponent(message);
+  
+  // Open WhatsApp
+  window.open(`https://web.whatsapp.com/send?text=${encodedMessage}`, '_blank');
 }
   </script>
 </body>
