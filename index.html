@@ -739,6 +739,360 @@
         width: 100%;
       }
     }
+
+    /* =========================
+       TEXTAREA (NOTES)
+    ========================= */
+
+    textarea {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 15px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* =========================
+       SEARCH & FILTER BAR
+    ========================= */
+
+    .search-filter-bar {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      align-items: end;
+    }
+
+    .search-filter-bar .field label {
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .search-filter-bar select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+    }
+
+    .search-filter-bar .clear-filter-field {
+      display: flex;
+      align-items: flex-end;
+    }
+
+    @media (max-width: 768px) {
+      .search-filter-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* =========================
+       VIEW BUTTON
+    ========================= */
+
+    .view-btn {
+      background: #6366f1;
+      color: white;
+      padding: 8px 14px;
+    }
+
+    .kanban-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .kanban-view-btn {
+      background: #6366f1;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      padding: 4px 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .clickable-row {
+      cursor: pointer;
+    }
+
+    .clickable-row:hover {
+      background: #f9fafb;
+    }
+
+    /* =========================
+       MODAL (ORDER DETAILS)
+    ========================= */
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 12px;
+    }
+
+    .modal-header h2 {
+      font-size: 20px;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: #6b7280;
+      padding: 0 6px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f1f1;
+      font-size: 14px;
+      gap: 10px;
+    }
+
+    .detail-row .label {
+      font-weight: bold;
+      color: #6b7280;
+    }
+
+    .detail-products-table {
+      width: 100%;
+      margin: 10px 0;
+      border-collapse: collapse;
+    }
+
+    .detail-products-table th,
+    .detail-products-table td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #f1f1f1;
+      font-size: 14px;
+    }
+
+    .detail-notes-box {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 14px;
+      margin: 10px 0;
+      white-space: pre-wrap;
+      color: #374151;
+    }
+
+    .detail-section-title {
+      font-weight: bold;
+      margin: 16px 0 8px;
+      font-size: 15px;
+      color: #111;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      min-width: 100px;
+    }
+
+    /* =========================
+       ACTIVITY TIMELINE
+    ========================= */
+
+    .activity-timeline {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    .activity-item {
+      padding: 10px 0 10px 16px;
+      border-left: 2px solid #d1d5db;
+      position: relative;
+      margin-left: 4px;
+    }
+
+    .activity-item::before {
+      content: '';
+      position: absolute;
+      left: -6px;
+      top: 14px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #2563eb;
+    }
+
+    .activity-item .activity-desc {
+      font-size: 13px;
+      color: #111;
+      font-weight: bold;
+    }
+
+    .activity-item .activity-time {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .activity-empty {
+      font-size: 13px;
+      color: #9ca3af;
+      padding: 8px 0;
+    }
+
+    /* =========================
+       PARTY MASTER
+    ========================= */
+
+    .party-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .party-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 12px 15px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .party-row-info .party-row-name {
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .party-row-info .party-row-mobile {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    /* =========================
+       PRINT LAYOUT
+    ========================= */
+
+    #printArea {
+      display: none;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #printArea, #printArea * {
+        visibility: visible;
+      }
+
+      #printArea {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+      }
+
+      .print-title {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 4px;
+      }
+
+      .print-subtitle {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 16px;
+      }
+
+      .print-meta-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        font-size: 14px;
+      }
+
+      .print-products-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 14px 0;
+      }
+
+      .print-products-table th,
+      .print-products-table td {
+        border: 1px solid #999;
+        padding: 8px;
+        text-align: left;
+        font-size: 13px;
+      }
+
+      .print-total {
+        text-align: right;
+        font-weight: bold;
+        font-size: 15px;
+        margin-top: 6px;
+      }
+
+      .print-notes {
+        margin-top: 16px;
+        border: 1px solid #999;
+        padding: 10px;
+        font-size: 13px;
+      }
+    }
   </style>
 </head>
 
@@ -754,6 +1108,7 @@
       <li><button class="nav-btn" onclick="navigateTo('neworder')">➕ New Order</button></li>
       <li><button class="nav-btn" onclick="navigateTo('listview')">📋 List View</button></li>
       <li><button class="nav-btn" onclick="navigateTo('pipeline')">🎯 Pipeline</button></li>
+      <li><button class="nav-btn" onclick="navigateTo('partymaster')">👥 Party Master</button></li>
     </ul>
     <div class="sidebar-bottom">
       <button onclick="alert('Settings coming soon!')">⚙️ Settings</button>
@@ -796,12 +1151,18 @@
           <div class="form-grid">
             <div>
               <label for="partyName">Party Name</label>
-              <input type="text" id="partyName" placeholder="Enter party name" />
+              <input type="text" id="partyName" list="partyNameList" placeholder="Enter or select party name" autocomplete="off" />
+              <datalist id="partyNameList"></datalist>
             </div>
             <div>
               <label for="orderDate">Order Date</label>
               <input type="date" id="orderDate" />
             </div>
+          </div>
+
+          <div style="margin-top: 15px;">
+            <label for="orderNotes">Notes / Instructions (optional)</label>
+            <textarea id="orderNotes" placeholder="e.g. Urgent delivery, matte lamination required, call before printing..."></textarea>
           </div>
 
           <div style="margin-top: 20px;">
@@ -843,6 +1204,30 @@
           <button class="secondary" onclick="clearFilter()">Clear Filter</button>
         </div>
 
+        <div class="search-filter-bar">
+          <div class="field">
+            <label for="searchParty">Party Name</label>
+            <input type="text" id="searchParty" placeholder="Search party..." oninput="applySearchFilters()" />
+          </div>
+          <div class="field">
+            <label for="searchProduct">Product</label>
+            <input type="text" id="searchProduct" placeholder="Search product..." oninput="applySearchFilters()" />
+          </div>
+          <div class="field">
+            <label for="filterDate">Order Date</label>
+            <input type="date" id="filterDate" onchange="applySearchFilters()" />
+          </div>
+          <div class="field">
+            <label for="filterStatus">Status</label>
+            <select id="filterStatus" onchange="applySearchFilters()">
+              <option value="">All Statuses</option>
+            </select>
+          </div>
+          <div class="clear-filter-field">
+            <button class="secondary" onclick="clearSearchFilters()" style="width:100%;">✖ Clear Filter</button>
+          </div>
+        </div>
+
         <div class="table-wrapper">
           <table id="ordersTable">
             <thead>
@@ -879,8 +1264,59 @@
         <div id="kanbanBoard" class="kanban-board"></div>
       </section>
 
+      <!-- PARTY MASTER SECTION -->
+      <section id="partymaster" class="view-section">
+        <div class="top-bar">
+          <h2>Party Master</h2>
+          <button class="secondary" onclick="loadParties()">🔄 Refresh</button>
+        </div>
+
+        <div class="card">
+          <h3 id="partyFormTitle">Add Party</h3>
+          <div class="form-grid">
+            <div>
+              <label for="partyMasterName">Party Name</label>
+              <input type="text" id="partyMasterName" placeholder="Enter party name" />
+            </div>
+            <div>
+              <label for="partyMasterMobile">Mobile Number (optional)</label>
+              <input type="text" id="partyMasterMobile" placeholder="Enter mobile number" />
+            </div>
+          </div>
+          <div class="actions">
+            <button class="secondary" onclick="clearPartyForm()">Cancel</button>
+            <button class="primary" id="savePartyBtn" onclick="saveParty()">Save Party</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <label for="partySearch">Search Party</label>
+          <input type="text" id="partySearch" placeholder="Search by party name..." oninput="renderPartyMaster()" />
+          <div id="partyListContainer" class="party-list"></div>
+        </div>
+      </section>
+
     </div>
   </div>
+
+  <!-- ORDER DETAILS MODAL -->
+  <div id="orderDetailsModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Order Details</h2>
+        <button class="modal-close-btn" onclick="closeOrderDetails()">✖</button>
+      </div>
+      <div id="orderDetailsBody"></div>
+      <div class="modal-actions">
+        <button class="edit-btn" id="detailsEditBtn">Edit</button>
+        <button class="delete-btn" id="detailsDeleteBtn">Delete</button>
+        <button class="secondary" id="detailsPrintBtn">🖨️ Print Job Sheet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRINT AREA (populated dynamically before printing) -->
+  <div id="printArea"></div>
 
   <!-- SCRIPT -->
   <script>
@@ -894,8 +1330,11 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let ordersData = [];
+    let partiesData = [];
     let editingOrderId = null;
+    let editingPartyId = null;
     let currentFilter = null;
+    let activeOrderDetailsId = null;
 
     const PIPELINE_STAGES = [
       { key: "New Enquiry", emoji: "🆕", special: false },
@@ -950,7 +1389,8 @@
         'dashboard': 'Dashboard',
         'neworder': 'New Order',
         'listview': 'List View',
-        'pipeline': 'Pipeline'
+        'pipeline': 'Pipeline',
+        'partymaster': 'Party Master'
       };
       document.getElementById('pageTitle').innerText = titles[section] || 'Dashboard';
 
@@ -964,6 +1404,8 @@
         renderListView();
       } else if (section === 'dashboard') {
         renderDashboard();
+      } else if (section === 'partymaster') {
+        renderPartyMaster();
       }
     }
 
@@ -984,8 +1426,23 @@
     window.addEventListener('load', () => {
       document.getElementById('orderDate').valueAsDate = new Date();
       addItem();
+      populateStatusFilterOptions();
       loadOrders();
+      loadParties();
     });
+
+    function populateStatusFilterOptions() {
+      const select = document.getElementById('filterStatus');
+      if (!select) return;
+      const existingOptions = select.querySelectorAll('option:not([value=""])');
+      existingOptions.forEach(opt => opt.remove());
+      PIPELINE_STAGES.forEach(stage => {
+        const opt = document.createElement('option');
+        opt.value = stage.key;
+        opt.innerText = `${stage.emoji} ${stage.key}`;
+        select.appendChild(opt);
+      });
+    }
 
     /* =========================================
        LOAD ORDERS FROM SUPABASE
@@ -1124,50 +1581,126 @@
     }
 
     /* =========================================
+       SEARCH & FILTER (List View)
+       ========================================= */
+
+    function applySearchFilters() {
+      renderListView();
+    }
+
+    function clearSearchFilters() {
+      const partyEl = document.getElementById('searchParty');
+      const productEl = document.getElementById('searchProduct');
+      const dateEl = document.getElementById('filterDate');
+      const statusEl = document.getElementById('filterStatus');
+
+      if (partyEl) partyEl.value = '';
+      if (productEl) productEl.value = '';
+      if (dateEl) dateEl.value = '';
+      if (statusEl) statusEl.value = '';
+
+      currentFilter = null;
+      document.getElementById('filterInfo').style.display = 'none';
+      document.getElementById('filterInfo2').style.display = 'none';
+      document.getElementById('filterInfo3').style.display = 'none';
+      document.querySelectorAll('.dashboard-card').forEach(card => {
+        card.classList.remove('filtered');
+      });
+
+      renderListView();
+      renderKanban();
+    }
+
+    function getFilteredOrders() {
+      let filtered = ordersData;
+
+      if (currentFilter) {
+        filtered = filtered.filter(o => (o.status || "New Enquiry") === currentFilter);
+      }
+
+      const partyEl = document.getElementById('searchParty');
+      const productEl = document.getElementById('searchProduct');
+      const dateEl = document.getElementById('filterDate');
+      const statusEl = document.getElementById('filterStatus');
+
+      const partyQuery = partyEl && partyEl.value ? partyEl.value.trim().toLowerCase() : '';
+      const productQuery = productEl && productEl.value ? productEl.value.trim().toLowerCase() : '';
+      const dateQuery = dateEl && dateEl.value ? dateEl.value : '';
+      const statusQuery = statusEl && statusEl.value ? statusEl.value : '';
+
+      if (partyQuery) {
+        filtered = filtered.filter(o => (o.party_name || '').toLowerCase().includes(partyQuery));
+      }
+
+      if (productQuery) {
+        filtered = filtered.filter(o =>
+          (o.order_items || []).some(item =>
+            (item.product_details || '').toLowerCase().includes(productQuery)
+          )
+        );
+      }
+
+      if (dateQuery) {
+        filtered = filtered.filter(o => o.order_date === dateQuery);
+      }
+
+      if (statusQuery) {
+        filtered = filtered.filter(o => (o.status || "New Enquiry") === statusQuery);
+      }
+
+      return filtered;
+    }
+
+    /* =========================================
        RENDER LIST VIEW
        ========================================= */
 
     function renderListView() {
       const tableBody = document.getElementById('ordersTableBody');
+      if (!tableBody) return;
       tableBody.innerHTML = '';
 
-      const filteredOrders = currentFilter
-        ? ordersData.filter(o => (o.status || "New Enquiry") === currentFilter)
-        : ordersData;
+      const filteredOrders = getFilteredOrders();
 
       if (filteredOrders.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No orders found</td></tr>';
-        return;
+      } else {
+        filteredOrders.forEach(order => {
+          let productsHtml = '';
+          let total = 0;
+
+          if (order.order_items && order.order_items.length > 0) {
+            order.order_items.forEach(item => {
+              const amt = item.amount !== null && item.amount !== undefined ? Number(item.amount) : 0;
+              total += amt;
+              productsHtml += `<div>${item.product_details || '-'} (Qty: ${item.quantity || 0})</div>`;
+            });
+          }
+
+          const row = document.createElement('tr');
+          row.className = 'clickable-row';
+          row.onclick = () => openOrderDetails(order.id);
+          row.innerHTML = `
+            <td>${order.party_name || '-'}</td>
+            <td>${order.order_date || '-'}</td>
+            <td>${order.status || 'New Enquiry'}</td>
+            <td class="multi-line">${productsHtml || '<div>No products</div>'}</td>
+            <td>₹${total.toFixed(2)}</td>
+            <td>
+              <div class="row-actions">
+                <button class="view-btn" onclick="event.stopPropagation(); openOrderDetails(${order.id})">View</button>
+                <button class="edit-btn" onclick="event.stopPropagation(); editOrder(${order.id})">Edit</button>
+                <button class="delete-btn" onclick="event.stopPropagation(); deleteOrder(${order.id})">Delete</button>
+              </div>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
       }
 
-      filteredOrders.forEach(order => {
-        let productsHtml = '';
-        let total = 0;
-
-        if (order.order_items && order.order_items.length > 0) {
-          order.order_items.forEach(item => {
-            const amt = item.amount !== null && item.amount !== undefined ? Number(item.amount) : 0;
-            total += amt;
-            productsHtml += `<div>${item.product_details || '-'} (Qty: ${item.quantity || 0})</div>`;
-          });
-        }
-
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${order.party_name || '-'}</td>
-          <td>${order.order_date || '-'}</td>
-          <td>${order.status || 'New Enquiry'}</td>
-          <td class="multi-line">${productsHtml || '<div>No products</div>'}</td>
-          <td>₹${total.toFixed(2)}</td>
-          <td>
-            <div class="row-actions">
-              <button class="edit-btn" onclick="editOrder(${order.id})">Edit</button>
-              <button class="delete-btn" onclick="deleteOrder(${order.id})">Delete</button>
-            </div>
-          </td>
-        `;
-        tableBody.appendChild(row);
-      });
+      if (document.getElementById('ordersCardsContainer') && document.getElementById('ordersCardsContainer').style.display === 'grid') {
+        renderOrderCards();
+      }
     }
 
     /* =========================================
@@ -1226,7 +1759,10 @@
 
             cardsHtml += `
               <div class="kanban-card" draggable="true" data-order-id="${order.id}">
-                <div class="kanban-card-party">${order.party_name || "-"}</div>
+                <div class="kanban-card-header">
+                  <div class="kanban-card-party">${order.party_name || "-"}</div>
+                  <button class="kanban-view-btn" onclick="event.stopPropagation(); openOrderDetails(${order.id})">👁️ View</button>
+                </div>
                 <div class="kanban-card-date">${order.order_date || "-"}</div>
                 <div class="kanban-card-products">
                   ${productsHtml}
@@ -1264,6 +1800,13 @@
        ========================================= */
 
     async function updateOrderStatus(orderId, newStatus) {
+      const order = ordersData.find(o => o.id === orderId);
+      const oldStatus = order ? (order.status || "New Enquiry") : null;
+
+      if (oldStatus === newStatus) {
+        return;
+      }
+
       const { error } = await supabaseClient
         .from("orders")
         .update({ status: newStatus })
@@ -1276,14 +1819,25 @@
         return;
       }
 
-      const order = ordersData.find(o => o.id === orderId);
       if (order) {
         order.status = newStatus;
       }
 
+      await recordActivity(
+        orderId,
+        "status_changed",
+        oldStatus,
+        newStatus,
+        `Status changed: ${oldStatus} → ${newStatus}`
+      );
+
       renderKanban();
       renderDashboard();
       renderListView();
+
+      if (activeOrderDetailsId === orderId) {
+        openOrderDetails(orderId);
+      }
     }
 
     /* =========================================
@@ -1378,6 +1932,7 @@
     async function saveOrder() {
       const partyName = document.getElementById("partyName").value.trim();
       const orderDate = document.getElementById("orderDate").value;
+      const notes = document.getElementById("orderNotes").value.trim();
 
       if (!partyName) {
         alert("Please enter a party name");
@@ -1417,7 +1972,8 @@
             .from("orders")
             .update({
               party_name: partyName,
-              order_date: orderDate
+              order_date: orderDate,
+              notes: notes || null
             })
             .eq("id", editingOrderId);
 
@@ -1444,6 +2000,9 @@
             }
           }
 
+          await recordActivity(editingOrderId, "updated", null, null, "Order Updated");
+          await ensurePartyExists(partyName);
+
           alert("Order Updated Successfully!");
         } else {
           const { data: newOrder, error: insertError } = await supabaseClient
@@ -1451,7 +2010,8 @@
             .insert({
               party_name: partyName,
               order_date: orderDate,
-              status: "New Enquiry"
+              status: "New Enquiry",
+              notes: notes || null
             })
             .select();
 
@@ -1477,6 +2037,9 @@
               return;
             }
           }
+
+          await recordActivity(orderId, "created", null, null, "Order Created");
+          await ensurePartyExists(partyName);
 
           alert("Order Created Successfully!");
         }
@@ -1506,6 +2069,7 @@
 
       document.getElementById("partyName").value = order.party_name || "";
       document.getElementById("orderDate").value = order.order_date || "";
+      document.getElementById("orderNotes").value = order.notes || "";
 
       const itemsContainer = document.getElementById("itemsContainer");
       itemsContainer.innerHTML = "";
@@ -1579,6 +2143,7 @@
 
       document.getElementById("partyName").value = "";
       document.getElementById("orderDate").valueAsDate = new Date();
+      document.getElementById("orderNotes").value = "";
 
       document.getElementById("itemsContainer").innerHTML = "";
       addItem();
@@ -1607,9 +2172,7 @@
       const cardsContainer = document.getElementById('ordersCardsContainer');
       cardsContainer.innerHTML = '';
 
-      const filteredOrders = currentFilter
-        ? ordersData.filter(o => (o.status || "New Enquiry") === currentFilter)
-        : ordersData;
+      const filteredOrders = getFilteredOrders();
 
       cardsContainer.style.display = 'grid';
       cardsContainer.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
@@ -1628,7 +2191,9 @@
         }
 
         const card = document.createElement('div');
+        card.className = 'clickable-row';
         card.style.cssText = 'background: white; border-radius: 10px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);';
+        card.onclick = () => openOrderDetails(order.id);
         card.innerHTML = `
           <div style="font-weight: bold; font-size: 16px; margin-bottom: 8px;">${order.party_name || '-'}</div>
           <div style="font-size: 13px; color: #6b7280; margin-bottom: 10px;">${order.order_date || '-'}</div>
@@ -1638,12 +2203,414 @@
           <div style="margin-bottom: 10px;">${productsHtml || '<div style="font-size: 13px; color: #9ca3af;">No products</div>'}</div>
           <div style="font-weight: bold; color: #2563eb; margin-bottom: 12px;">Total: ₹${total.toFixed(2)}</div>
           <div style="display: flex; gap: 8px;">
-            <button class="edit-btn" onclick="editOrder(${order.id})" style="flex: 1;">Edit</button>
-            <button class="delete-btn" onclick="deleteOrder(${order.id})" style="flex: 1;">Delete</button>
+            <button class="view-btn" onclick="event.stopPropagation(); openOrderDetails(${order.id})" style="flex: 1;">View</button>
+            <button class="edit-btn" onclick="event.stopPropagation(); editOrder(${order.id})" style="flex: 1;">Edit</button>
+            <button class="delete-btn" onclick="event.stopPropagation(); deleteOrder(${order.id})" style="flex: 1;">Delete</button>
           </div>
         `;
         cardsContainer.appendChild(card);
       });
+    }
+
+    /* =========================================
+       ORDER ACTIVITY HISTORY
+       ========================================= */
+
+    async function recordActivity(orderId, activityType, oldStatus, newStatus, description) {
+      try {
+        const { error } = await supabaseClient.from("order_activity").insert({
+          order_id: orderId,
+          activity_type: activityType,
+          old_status: oldStatus,
+          new_status: newStatus,
+          description: description
+        });
+
+        if (error) {
+          console.error("Error recording activity:", error);
+        }
+      } catch (error) {
+        console.error("Unexpected error recording activity:", error);
+      }
+    }
+
+    async function loadOrderActivity(orderId) {
+      try {
+        const { data, error } = await supabaseClient
+          .from("order_activity")
+          .select("*")
+          .eq("order_id", orderId)
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.error("Error loading activity:", error);
+          return [];
+        }
+
+        return data || [];
+      } catch (error) {
+        console.error("Unexpected error loading activity:", error);
+        return [];
+      }
+    }
+
+    function formatActivityDate(isoString) {
+      if (!isoString) return "-";
+      const date = new Date(isoString);
+      if (isNaN(date.getTime())) return "-";
+      return date.toLocaleString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    /* =========================================
+       PARTY MASTER
+       ========================================= */
+
+    async function loadParties() {
+      try {
+        const { data, error } = await supabaseClient
+          .from("parties")
+          .select("*")
+          .order("party_name", { ascending: true });
+
+        if (error) {
+          console.error("Error loading parties:", error);
+          return;
+        }
+
+        partiesData = data || [];
+        populatePartyDatalist();
+
+        if (document.getElementById('partymaster').classList.contains('active')) {
+          renderPartyMaster();
+        }
+      } catch (error) {
+        console.error("Unexpected error loading parties:", error);
+      }
+    }
+
+    function populatePartyDatalist() {
+      const datalist = document.getElementById('partyNameList');
+      if (!datalist) return;
+      datalist.innerHTML = '';
+      partiesData.forEach(party => {
+        const opt = document.createElement('option');
+        opt.value = party.party_name;
+        datalist.appendChild(opt);
+      });
+    }
+
+    async function ensurePartyExists(partyName) {
+      if (!partyName) return;
+
+      const exists = partiesData.some(
+        p => (p.party_name || '').trim().toLowerCase() === partyName.trim().toLowerCase()
+      );
+
+      if (exists) return;
+
+      try {
+        const { error } = await supabaseClient.from("parties").insert({
+          party_name: partyName
+        });
+
+        if (error) {
+          console.error("Error auto-adding party:", error);
+          return;
+        }
+
+        await loadParties();
+      } catch (error) {
+        console.error("Unexpected error auto-adding party:", error);
+      }
+    }
+
+    function renderPartyMaster() {
+      const container = document.getElementById('partyListContainer');
+      if (!container) return;
+
+      const searchEl = document.getElementById('partySearch');
+      const query = searchEl && searchEl.value ? searchEl.value.trim().toLowerCase() : '';
+
+      const filtered = query
+        ? partiesData.filter(p => (p.party_name || '').toLowerCase().includes(query))
+        : partiesData;
+
+      container.innerHTML = '';
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="activity-empty">No parties found</div>';
+        return;
+      }
+
+      filtered.forEach(party => {
+        const row = document.createElement('div');
+        row.className = 'party-row';
+        row.innerHTML = `
+          <div class="party-row-info">
+            <div class="party-row-name">${party.party_name || '-'}</div>
+            <div class="party-row-mobile">${party.mobile_number ? '📞 ' + party.mobile_number : 'No mobile number'}</div>
+          </div>
+          <div class="row-actions">
+            <button class="edit-btn" onclick="editParty(${party.id})">Edit</button>
+            <button class="delete-btn" onclick="deleteParty(${party.id})">Delete</button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    async function saveParty() {
+      const nameEl = document.getElementById('partyMasterName');
+      const mobileEl = document.getElementById('partyMasterMobile');
+
+      const partyName = nameEl.value.trim();
+      const mobileNumber = mobileEl.value.trim();
+
+      if (!partyName) {
+        alert("Please enter a party name");
+        return;
+      }
+
+      try {
+        if (editingPartyId) {
+          const { error } = await supabaseClient
+            .from("parties")
+            .update({
+              party_name: partyName,
+              mobile_number: mobileNumber || null
+            })
+            .eq("id", editingPartyId);
+
+          if (error) {
+            console.error(error);
+            alert("Error updating party: " + error.message);
+            return;
+          }
+
+          alert("Party Updated Successfully!");
+        } else {
+          const { error } = await supabaseClient.from("parties").insert({
+            party_name: partyName,
+            mobile_number: mobileNumber || null
+          });
+
+          if (error) {
+            console.error(error);
+            alert("Error adding party: " + error.message);
+            return;
+          }
+
+          alert("Party Added Successfully!");
+        }
+
+        clearPartyForm();
+        loadParties();
+      } catch (error) {
+        console.error(error);
+        alert("Unexpected error: " + error.message);
+      }
+    }
+
+    function editParty(partyId) {
+      const party = partiesData.find(p => p.id === partyId);
+      if (!party) {
+        alert("Party not found. Please refresh and try again.");
+        return;
+      }
+
+      editingPartyId = partyId;
+      document.getElementById('partyMasterName').value = party.party_name || '';
+      document.getElementById('partyMasterMobile').value = party.mobile_number || '';
+      document.getElementById('partyFormTitle').innerText = 'Edit Party';
+      document.getElementById('savePartyBtn').innerText = 'Update Party';
+    }
+
+    async function deleteParty(partyId) {
+      const confirmDelete = confirm("Are you sure you want to delete this party? Existing orders will not be affected.");
+      if (!confirmDelete) return;
+
+      try {
+        const { error } = await supabaseClient.from("parties").delete().eq("id", partyId);
+
+        if (error) {
+          console.error(error);
+          alert("Error deleting party: " + error.message);
+          return;
+        }
+
+        if (editingPartyId === partyId) {
+          clearPartyForm();
+        }
+
+        alert("Party Deleted Successfully!");
+        loadParties();
+      } catch (error) {
+        console.error(error);
+        alert("Unexpected error: " + error.message);
+      }
+    }
+
+    function clearPartyForm() {
+      editingPartyId = null;
+      document.getElementById('partyMasterName').value = '';
+      document.getElementById('partyMasterMobile').value = '';
+      document.getElementById('partyFormTitle').innerText = 'Add Party';
+      document.getElementById('savePartyBtn').innerText = 'Save Party';
+    }
+
+    /* =========================================
+       ORDER DETAILS MODAL
+       ========================================= */
+
+    async function openOrderDetails(orderId) {
+      const order = ordersData.find(o => o.id === orderId);
+      if (!order) {
+        alert("Order not found. Please refresh and try again.");
+        return;
+      }
+
+      activeOrderDetailsId = orderId;
+
+      const body = document.getElementById('orderDetailsBody');
+
+      let productsRows = '';
+      let total = 0;
+
+      if (order.order_items && order.order_items.length > 0) {
+        order.order_items.forEach(item => {
+          const amt = item.amount !== null && item.amount !== undefined ? Number(item.amount) : 0;
+          total += amt;
+          productsRows += `
+            <tr>
+              <td>${item.product_details || '-'}</td>
+              <td>${item.quantity || 0}</td>
+              <td>₹${amt.toFixed(2)}</td>
+            </tr>
+          `;
+        });
+      } else {
+        productsRows = '<tr><td colspan="3">No products</td></tr>';
+      }
+
+      body.innerHTML = `
+        <div class="detail-row"><span class="label">Party Name</span><span>${order.party_name || '-'}</span></div>
+        <div class="detail-row"><span class="label">Order Date</span><span>${order.order_date || '-'}</span></div>
+        <div class="detail-row"><span class="label">Current Status</span><span>${order.status || 'New Enquiry'}</span></div>
+
+        <div class="detail-section-title">Products</div>
+        <table class="detail-products-table">
+          <thead>
+            <tr><th>Product</th><th>Qty</th><th>Amount</th></tr>
+          </thead>
+          <tbody>${productsRows}</tbody>
+        </table>
+        <div class="detail-row"><span class="label">Grand Total</span><span style="font-weight:bold;color:#2563eb;">₹${total.toFixed(2)}</span></div>
+
+        <div class="detail-section-title">Notes / Instructions</div>
+        <div class="detail-notes-box">${order.notes ? order.notes.replace(/</g, '&lt;') : 'No notes added'}</div>
+
+        <div class="detail-section-title">Activity History</div>
+        <ul class="activity-timeline" id="activityTimeline">
+          <li class="activity-empty">Loading activity...</li>
+        </ul>
+      `;
+
+      document.getElementById('detailsEditBtn').onclick = () => {
+        closeOrderDetails();
+        editOrder(orderId);
+      };
+      document.getElementById('detailsDeleteBtn').onclick = () => {
+        deleteOrder(orderId);
+        closeOrderDetails();
+      };
+      document.getElementById('detailsPrintBtn').onclick = () => {
+        printJobSheet(orderId);
+      };
+
+      document.getElementById('orderDetailsModal').classList.add('active');
+
+      const activity = await loadOrderActivity(orderId);
+      const timeline = document.getElementById('activityTimeline');
+      if (timeline) {
+        if (activity.length === 0) {
+          timeline.innerHTML = '<li class="activity-empty">No activity recorded yet</li>';
+        } else {
+          timeline.innerHTML = activity.map(a => `
+            <li class="activity-item">
+              <div class="activity-desc">${a.description || a.activity_type}</div>
+              <div class="activity-time">${formatActivityDate(a.created_at)}</div>
+            </li>
+          `).join('');
+        }
+      }
+    }
+
+    function closeOrderDetails() {
+      activeOrderDetailsId = null;
+      document.getElementById('orderDetailsModal').classList.remove('active');
+    }
+
+    /* =========================================
+       PRINT / PDF JOB SHEET
+       ========================================= */
+
+    function printJobSheet(orderId) {
+      const order = ordersData.find(o => o.id === orderId);
+      if (!order) {
+        alert("Order not found. Please refresh and try again.");
+        return;
+      }
+
+      let productsRows = '';
+      let total = 0;
+
+      if (order.order_items && order.order_items.length > 0) {
+        order.order_items.forEach(item => {
+          const amt = item.amount !== null && item.amount !== undefined ? Number(item.amount) : 0;
+          total += amt;
+          productsRows += `
+            <tr>
+              <td>${item.product_details || '-'}</td>
+              <td>${item.quantity || 0}</td>
+              <td>₹${amt.toFixed(2)}</td>
+            </tr>
+          `;
+        });
+      } else {
+        productsRows = '<tr><td colspan="3">No products</td></tr>';
+      }
+
+      const printArea = document.getElementById('printArea');
+      printArea.innerHTML = `
+        <div class="print-title">SKV Press Orders</div>
+        <div class="print-subtitle">Job Sheet</div>
+
+        <div class="print-meta-row"><span><strong>Party Name:</strong> ${order.party_name || '-'}</span></div>
+        <div class="print-meta-row"><span><strong>Order Date:</strong> ${order.order_date || '-'}</span></div>
+        <div class="print-meta-row"><span><strong>Current Status:</strong> ${order.status || 'New Enquiry'}</span></div>
+
+        <table class="print-products-table">
+          <thead>
+            <tr><th>Product</th><th>Quantity</th><th>Amount</th></tr>
+          </thead>
+          <tbody>${productsRows}</tbody>
+        </table>
+
+        <div class="print-total">Grand Total: ₹${total.toFixed(2)}</div>
+
+        <div class="print-notes">
+          <strong>Notes / Instructions:</strong><br/>
+          ${order.notes ? order.notes.replace(/</g, '&lt;').replace(/\n/g, '<br/>') : 'No notes added'}
+        </div>
+      `;
+
+      window.print();
     }
 
   </script>
