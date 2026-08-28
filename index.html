@@ -74,6 +74,33 @@
       padding: 10px;
     }
 
+    .edit-btn {
+      background: #10b981;
+      color: white;
+      padding: 8px 14px;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .row-actions button {
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+
+    .order-card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .order-card-actions button {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
     .card {
       background: white;
       border-radius: 10px;
@@ -226,7 +253,7 @@
       }
 
       table {
-        min-width: 650px;
+        min-width: 750px;
       }
 
       th,
@@ -313,7 +340,7 @@
 
 table {
     width: 100%;
-    min-width: 600px;
+    min-width: 700px;
 }
 
 /* Orders: table on desktop, cards on mobile */
@@ -404,7 +431,7 @@ table {
   <div id="orderForm" class="card">
 
     <div class="top-bar">
-      <h2>New Order</h2>
+      <h2 id="formTitle">New Order</h2>
     </div>
 
 
@@ -481,6 +508,7 @@ table {
       <button
         type="button"
         class="primary"
+        id="saveOrderBtn"
         onclick="saveOrder()"
       >
         Save Order
@@ -520,6 +548,7 @@ table {
             <th>Product</th>
             <th>Quantity</th>
             <th>Amount</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
@@ -556,6 +585,15 @@ table {
 
 
   /* =========================================
+     EDIT MODE STATE
+     ========================================= */
+
+  let editingOrderId = null;
+
+  let ordersData = [];
+
+
+  /* =========================================
      INITIAL SETUP
      ========================================= */
 
@@ -573,7 +611,7 @@ table {
      ADD ITEM
      ========================================= */
 
-  function addItem() {
+  function addItem(product, quantity, amount) {
 
     const container =
       document.getElementById("itemsContainer");
@@ -592,6 +630,7 @@ table {
         type="text"
         class="product"
         placeholder="Product details"
+        value="${product ? String(product).replace(/"/g, "&quot;") : ""}"
       />
 
       <input
@@ -599,6 +638,7 @@ table {
         class="quantity"
         placeholder="Qty"
         min="1"
+        value="${quantity !== undefined && quantity !== null ? quantity : ""}"
       />
 
       <input
@@ -608,6 +648,7 @@ table {
         min="0"
         step="0.01"
         oninput="calculateTotal()"
+        value="${amount !== undefined && amount !== null ? amount : ""}"
       />
 
       <button
@@ -622,6 +663,9 @@ table {
 
 
     container.appendChild(row);
+
+
+    calculateTotal();
 
   }
 
@@ -759,35 +803,109 @@ table {
     }
 
 
-    /* SAVE MAIN ORDER */
-
-    const {
-      data: order,
-      error: orderError
-    } = await supabaseClient
-
-      .from("orders")
-
-      .insert({
-        party_name: partyName,
-        order_date: orderDate
-      })
-
-      .select()
-
-      .single();
+    const isEditing = editingOrderId !== null;
 
 
-    if (orderError) {
+    let orderId;
 
-      console.error(orderError);
 
-      alert(
-        "Error saving order: " +
-        orderError.message
-      );
+    if (isEditing) {
 
-      return;
+      /* UPDATE MAIN ORDER */
+
+      const {
+        error: updateError
+      } = await supabaseClient
+
+        .from("orders")
+
+        .update({
+          party_name: partyName,
+          order_date: orderDate
+        })
+
+        .eq("id", editingOrderId);
+
+
+      if (updateError) {
+
+        console.error(updateError);
+
+        alert(
+          "Error updating order: " +
+          updateError.message
+        );
+
+        return;
+
+      }
+
+
+      orderId = editingOrderId;
+
+
+      /* REMOVE OLD ITEMS BEFORE RE-ADDING */
+
+      const {
+        error: deleteItemsError
+      } = await supabaseClient
+
+        .from("order_items")
+
+        .delete()
+
+        .eq("order_id", orderId);
+
+
+      if (deleteItemsError) {
+
+        console.error(deleteItemsError);
+
+        alert(
+          "Error updating product details: " +
+          deleteItemsError.message
+        );
+
+        return;
+
+      }
+
+    } else {
+
+      /* SAVE MAIN ORDER */
+
+      const {
+        data: order,
+        error: orderError
+      } = await supabaseClient
+
+        .from("orders")
+
+        .insert({
+          party_name: partyName,
+          order_date: orderDate
+        })
+
+        .select()
+
+        .single();
+
+
+      if (orderError) {
+
+        console.error(orderError);
+
+        alert(
+          "Error saving order: " +
+          orderError.message
+        );
+
+        return;
+
+      }
+
+
+      orderId = order.id;
 
     }
 
@@ -797,7 +915,7 @@ table {
     const itemsToSave =
       items.map(item => ({
 
-        order_id: order.id,
+        order_id: orderId,
 
         product_details:
           item.product_details,
@@ -830,7 +948,8 @@ table {
       console.error(itemsError);
 
       alert(
-        "Order saved, but product details failed: " +
+        (isEditing ? "Order updated, but" : "Order saved, but") +
+        " product details failed: " +
         itemsError.message
       );
 
@@ -839,7 +958,11 @@ table {
     }
 
 
-    alert("Order Saved Successfully!");
+    alert(
+      isEditing
+        ? "Order Updated Successfully!"
+        : "Order Saved Successfully!"
+    );
 
 
     clearForm();
@@ -890,6 +1013,9 @@ table {
       return;
 
     }
+
+
+    ordersData = data;
 
 
     const list =
@@ -1007,6 +1133,25 @@ table {
           ${amounts}
         </td>
 
+        <td>
+          <div class="row-actions">
+            <button
+              type="button"
+              class="edit-btn"
+              onclick="editOrder(${order.id})"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="delete-btn"
+              onclick="deleteOrder(${order.id})"
+            >
+              Delete
+            </button>
+          </div>
+        </td>
+
       `;
 
 
@@ -1023,8 +1168,26 @@ table {
       card.innerHTML = `
 
         <div class="order-card-header">
-          <div class="order-card-party">${order.party_name || "-"}</div>
-          <div class="order-card-date">${order.order_date || "-"}</div>
+          <div>
+            <div class="order-card-party">${order.party_name || "-"}</div>
+            <div class="order-card-date">${order.order_date || "-"}</div>
+          </div>
+          <div class="order-card-actions">
+            <button
+              type="button"
+              class="edit-btn"
+              onclick="editOrder(${order.id})"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="delete-btn"
+              onclick="deleteOrder(${order.id})"
+            >
+              Delete
+            </button>
+          </div>
         </div>
 
         ${cardItems}
@@ -1040,10 +1203,185 @@ table {
 
 
   /* =========================================
+     EDIT ORDER
+     ========================================= */
+
+  function editOrder(orderId) {
+
+    const order =
+      ordersData.find(o => o.id === orderId);
+
+
+    if (!order) {
+
+      alert("Order not found. Please refresh and try again.");
+
+      return;
+
+    }
+
+
+    editingOrderId = orderId;
+
+
+    document
+      .getElementById("partyName")
+      .value = order.party_name || "";
+
+
+    document
+      .getElementById("orderDate")
+      .value = order.order_date || "";
+
+
+    const itemsContainer =
+      document.getElementById("itemsContainer");
+
+
+    itemsContainer.innerHTML = "";
+
+
+    if (order.order_items && order.order_items.length > 0) {
+
+      order.order_items.forEach(item => {
+
+        addItem(
+          item.product_details,
+          item.quantity,
+          item.amount
+        );
+
+      });
+
+    } else {
+
+      addItem();
+
+    }
+
+
+    calculateTotal();
+
+
+    document
+      .getElementById("formTitle")
+      .innerText = "Edit Order";
+
+
+    document
+      .getElementById("saveOrderBtn")
+      .innerText = "Update Order";
+
+
+    showOrderForm();
+
+  }
+
+
+  /* =========================================
+     DELETE ORDER
+     ========================================= */
+
+  async function deleteOrder(orderId) {
+
+    const confirmDelete =
+      confirm(
+        "Are you sure you want to delete this order and all its products? This cannot be undone."
+      );
+
+
+    if (!confirmDelete) {
+
+      return;
+
+    }
+
+
+    const {
+      error: itemsError
+    } = await supabaseClient
+
+      .from("order_items")
+
+      .delete()
+
+      .eq("order_id", orderId);
+
+
+    if (itemsError) {
+
+      console.error(itemsError);
+
+      alert(
+        "Error deleting order items: " +
+        itemsError.message
+      );
+
+      return;
+
+    }
+
+
+    const {
+      error: orderError
+    } = await supabaseClient
+
+      .from("orders")
+
+      .delete()
+
+      .eq("id", orderId);
+
+
+    if (orderError) {
+
+      console.error(orderError);
+
+      alert(
+        "Error deleting order: " +
+        orderError.message
+      );
+
+      return;
+
+    }
+
+
+    /* IF THE DELETED ORDER WAS BEING EDITED, RESET THE FORM */
+
+    if (editingOrderId === orderId) {
+
+      clearForm();
+
+    }
+
+
+    alert("Order Deleted Successfully!");
+
+
+    loadOrders();
+
+  }
+
+
+  /* =========================================
      CLEAR FORM
      ========================================= */
 
   function clearForm() {
+
+    editingOrderId = null;
+
+
+    document
+      .getElementById("formTitle")
+      .innerText = "New Order";
+
+
+    document
+      .getElementById("saveOrderBtn")
+      .innerText = "Save Order";
+
 
     document
       .getElementById("partyName")
