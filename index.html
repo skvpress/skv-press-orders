@@ -246,6 +246,7 @@
               <label for="partyName">Party Name</label>
               <input type="text" id="partyName" placeholder="Enter or select party name" list="partiesList" onchange="autoFillPartyPhone()" />
               <datalist id="partiesList"></datalist>
+              <datalist id="productsList"></datalist>
               <small style="color: #6b7280; margin-top: 4px; display: block;">Existing parties will auto-fill mobile number</small>
             </div>
             <div>
@@ -436,6 +437,7 @@ async function loadOrders() {
     renderListView();
     renderKanban();
     updatePartiesList();
+    updateProductsList();
   } catch (error) { console.error(error); }
 }
 async function loadParties() {
@@ -452,6 +454,29 @@ function updatePartiesList() {
   partiesData.forEach(party => {
     const option = document.createElement('option');
     option.value = party.party_name;
+    datalist.appendChild(option);
+  });
+}
+function updateProductsList() {
+  const datalist = document.getElementById('productsList');
+  datalist.innerHTML = '';
+  
+  // Get unique product details from all orders
+  const uniqueProducts = new Set();
+  ordersData.forEach(order => {
+    if (order.order_items) {
+      order.order_items.forEach(item => {
+        if (item.product_details) {
+          uniqueProducts.add(item.product_details);
+        }
+      });
+    }
+  });
+  
+  // Add to datalist
+  uniqueProducts.forEach(product => {
+    const option = document.createElement('option');
+    option.value = product;
     datalist.appendChild(option);
   });
 }
@@ -778,7 +803,7 @@ function addItem(productDetails = "", quantity = "", amount = "") {
   const itemsContainer = document.getElementById("itemsContainer");
   const itemRow = document.createElement("div");
   itemRow.className = "item-row";
-  itemRow.innerHTML = `<input type="text" placeholder="Product Details" value="${productDetails}" onchange="calculateTotal()" /><input type="number" placeholder="Qty" value="${quantity}" onchange="calculateTotal()" /><input type="number" placeholder="Amount" value="${amount}" onchange="calculateTotal()" /><button class="delete-btn" onclick="this.parentElement.remove(); calculateTotal();">Delete</button>`;
+  itemRow.innerHTML = `<input type="text" placeholder="Product Details" value="${productDetails}" list="productsList" onchange="calculateTotal()" /><input type="number" placeholder="Qty" value="${quantity}" onchange="calculateTotal()" /><input type="number" placeholder="Amount" value="${amount}" onchange="calculateTotal()" /><button class="delete-btn" onclick="this.parentElement.remove(); calculateTotal();">Delete</button>`;
   itemsContainer.appendChild(itemRow);
 }
 function calculateTotal() {
