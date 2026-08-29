@@ -577,9 +577,14 @@ function renderListView() {
   });
 }
 function openOrderDetails(orderId) {
+  console.log(`[OrderDetails] Opening details for order ${orderId}`);
   const order = ordersData.find(o => o.id === orderId);
-  if (!order) return;
+  if (!order) {
+    console.log(`[OrderDetails] Order not found`);
+    return;
+  }
   currentOrderDetailsId = orderId;
+  console.log(`[OrderDetails] Order found:`, order);
   let productsHtml = '';
   let total = 0;
   if (order.order_items && order.order_items.length > 0) {
@@ -634,10 +639,12 @@ function openOrderDetails(orderId) {
   document.getElementById('orderDetailsContent').innerHTML = content;
   
   // Now fetch activity history asynchronously
+  console.log(`[OrderDetails] Calling fetchOrderActivity for order ${orderId}`);
   fetchOrderActivity(orderId);
 }
 
 async function fetchOrderActivity(orderId) {
+  console.log(`[Activity] Fetching activities for order ID: ${orderId}`);
   try {
     const { data: activities, error } = await supabaseClient
       .from('order_activity')
@@ -645,15 +652,20 @@ async function fetchOrderActivity(orderId) {
       .eq('order_id', orderId)
       .order('created_at', { ascending: false });
     
+    console.log(`[Activity] Query result - Error:`, error, `Data:`, activities);
+    
     if (error) throw error;
     
     let activityHtml = '';
     
     if (!activities || activities.length === 0) {
+      console.log(`[Activity] No activities found for order ${orderId}`);
       activityHtml = '<div style="text-align: center; color: #999; padding: 20px;">No activity history yet</div>';
     } else {
+      console.log(`[Activity] Found ${activities.length} activities`);
       activityHtml = '<div class="activity-timeline">';
-      activities.forEach(activity => {
+      activities.forEach((activity, idx) => {
+        console.log(`[Activity ${idx}]:`, activity);
         const date = new Date(activity.created_at).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         let activityContent = '';
         let emoji = '📋';
@@ -687,15 +699,17 @@ async function fetchOrderActivity(orderId) {
     }
     
     const container = document.getElementById('activityHistoryContainer');
+    console.log(`[Activity] Container found:`, !!container);
     if (container) {
       container.innerHTML = activityHtml;
+      console.log(`[Activity] Updated container with ${activities ? activities.length : 0} activities`);
     }
     
   } catch (error) {
-    console.error('Error fetching activity history:', error);
+    console.error('[Activity] Error fetching activity history:', error);
     const container = document.getElementById('activityHistoryContainer');
     if (container) {
-      container.innerHTML = '<div style="text-align: center; color: #d32f2f; padding: 20px;">Error loading activity history</div>';
+      container.innerHTML = '<div style="text-align: center; color: #d32f2f; padding: 20px;">Error loading activity history: ' + error.message + '</div>';
     }
   }
 }
@@ -782,6 +796,8 @@ async function updateOrderStatus(orderId, newStatus) {
       activity_type: 'Status Changed', 
       old_status: oldStatus, 
       new_status: newStatus 
+    }).then(({ error }) => {
+      console.log(`[Activity] Status Changed activity inserted for order ${orderId}: ${oldStatus} → ${newStatus}`, error);
     });
     
   } catch (error) {
@@ -971,11 +987,12 @@ async function saveOrder() {
       
       // Create activity record with detailed description
       const description = changes.length > 0 ? changes.join(', ') : 'Order details updated';
-      await supabaseClient.from('order_activity').insert({ 
+      const { error: activityError } = await supabaseClient.from('order_activity').insert({ 
         order_id: editingOrderId, 
         activity_type: 'Order Updated', 
         description: description 
       });
+      console.log(`[Activity] Order Updated activity inserted for order ${editingOrderId}:`, description, `Error:`, activityError);
       
       // Refresh activity history if Order Details is currently open
       if (currentOrderDetailsId === editingOrderId) {
@@ -994,6 +1011,7 @@ async function saveOrder() {
         if (itemInsertError) throw itemInsertError;
       }
       await supabaseClient.from('order_activity').insert({ order_id: orderId, activity_type: 'Order Created', description: 'New order created' });
+      console.log(`[Activity] Order Created activity inserted for order ${orderId}`);
       alert("Order Created Successfully!");
     }
     clearForm();
