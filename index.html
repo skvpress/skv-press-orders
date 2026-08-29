@@ -346,6 +346,7 @@
         <div class="top-bar">
           <h2>Pipeline</h2>
           <div style="display: flex; gap: 10px;">
+            <input type="text" id="pipelineSearch" placeholder="Search by party name or product..." style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; width: 250px; font-size: 14px;" onkeyup="filterPipeline()">
             <button class="secondary" onclick="loadOrders()">🔄 Refresh</button>
           </div>
         </div>
@@ -782,6 +783,27 @@ function renderKanban() {
     board.appendChild(column);
   });
   setupDragDrop();
+}
+function filterPipeline() {
+  const searchInput = document.getElementById('pipelineSearch');
+  const searchTerm = (searchInput.value || '').toLowerCase().trim();
+  const cards = document.querySelectorAll('.kanban-card');
+  
+  if (!searchTerm) {
+    // Clear search - show all cards
+    cards.forEach(card => {
+      card.style.display = 'block';
+    });
+    return;
+  }
+  
+  cards.forEach(card => {
+    const partyName = (card.querySelector('.kanban-card-party')?.innerText || '').toLowerCase();
+    const products = (card.querySelector('.kanban-card-products')?.innerText || '').toLowerCase();
+    
+    const matches = partyName.includes(searchTerm) || products.includes(searchTerm);
+    card.style.display = matches ? 'block' : 'none';
+  });
 }
 async function updateOrderStatus(orderId, newStatus) {
   const order = ordersData.find(o => o.id === orderId);
