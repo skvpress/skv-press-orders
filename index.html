@@ -304,7 +304,6 @@
               <option value="Design Approved">👍 Design Approved</option>
               <option value="Master Complete">🖨️ Master Complete</option>
               <option value="Printing in Progress">🖨️ Printing in Progress</option>
-              <option value="Finishing / Binding">✂️ Finishing / Binding</option>
               <option value="Ready for Delivery">📦 Ready for Delivery</option>
               <option value="Delivered / Completed">🚚 Delivered / Completed</option>
               <option value="On Hold">⏸️ On Hold</option>
@@ -386,7 +385,6 @@ const PIPELINE_STAGES = [
   { key: "Design Approved", emoji: "👍", special: false },
   { key: "Master Complete", emoji: "🖨️", special: false },
   { key: "Printing in Progress", emoji: "🖨️", special: false },
-  { key: "Finishing / Binding", emoji: "✂️", special: false },
   { key: "Ready for Delivery", emoji: "📦", special: false },
   { key: "Delivered / Completed", emoji: "🚚", special: false },
   { key: "On Hold", emoji: "⏸️", special: true },
@@ -396,8 +394,8 @@ const DASHBOARD_MAPPING = {
   "New Orders": "New Enquiry",
   "Design Pending": "Design in Progress",
   "Waiting for Approval": "Customer Approval Pending",
+  "Master Complete": "Master Complete",
   "Printing Jobs": "Printing in Progress",
-  "Finishing Jobs": "Finishing / Binding",
   "Ready for Delivery": "Ready for Delivery",
   "Completed Orders": "Delivered / Completed",
 };
@@ -464,8 +462,8 @@ function renderDashboard() {
     { title: 'New Orders', icon: '📥', key: 'New Enquiry', displayKey: 'New Orders' },
     { title: 'Design Pending', icon: '🎨', key: 'Design in Progress', displayKey: 'Design Pending' },
     { title: 'Waiting for Approval', icon: '⏳', key: 'Customer Approval Pending', displayKey: 'Waiting for Approval' },
+    { title: 'Master Complete', icon: '✨', key: 'Master Complete', displayKey: 'Master Complete' },
     { title: 'Printing Jobs', icon: '🖨️', key: 'Printing in Progress', displayKey: 'Printing Jobs' },
-    { title: 'Finishing Jobs', icon: '✂️', key: 'Finishing / Binding', displayKey: 'Finishing Jobs' },
     { title: 'Ready for Delivery', icon: '📦', key: 'Ready for Delivery', displayKey: 'Ready for Delivery' },
     { title: 'Completed Orders', icon: '✅', key: 'Delivered / Completed', displayKey: 'Completed Orders' }
   ];
@@ -1057,8 +1055,16 @@ function shareToWhatsApp() {
   // Encode message for URL
   const encodedMessage = encodeURIComponent(message);
   
+  // Detect mobile vs desktop
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Use appropriate WhatsApp URL
+  const whatsappUrl = isMobile 
+    ? `https://api.whatsapp.com/send?text=${encodedMessage}`
+    : `https://web.whatsapp.com/send?text=${encodedMessage}`;
+  
   // Open WhatsApp
-  window.open(`https://web.whatsapp.com/send?text=${encodedMessage}`, '_blank');
+  window.open(whatsappUrl, '_blank');
 }
   </script>
 </body>
