@@ -931,14 +931,59 @@ async function saveOrder() {
     await loadParties();
     
     if (editingOrderId) {
+      // Get old order data for comparison
+      const oldOrder = ordersData.find(o => o.id === editingOrderId);
+      if (!oldOrder) {
+        alert("Error: Order not found. Please refresh and try again.");
+        return;
+      }
+      
+      // Update order details
       const { error: updateError } = await supabaseClient.from("orders").update({ party_name: partyName, order_date: orderDate, notes: notes }).eq("id", editingOrderId);
       if (updateError) throw updateError;
+      
+      // Update items
       await supabaseClient.from("order_items").delete().eq("order_id", editingOrderId);
       for (let item of items) {
         const { error: insertError } = await supabaseClient.from("order_items").insert({ order_id: editingOrderId, product_details: item.product_details, quantity: item.quantity, amount: item.amount });
         if (insertError) throw insertError;
       }
-      await supabaseClient.from('order_activity').insert({ order_id: editingOrderId, activity_type: 'Order Updated', description: 'Order details updated' });
+      
+      // Build detailed activity description for changes
+      let changes = [];
+      
+      if (oldOrder.party_name !== partyName) {
+        changes.push(`Party changed: ${oldOrder.party_name} → ${partyName}`);
+      }
+      if (oldOrder.order_date !== orderDate) {
+        changes.push(`Order date changed: ${oldOrder.order_date} → ${orderDate}`);
+      }
+      if ((oldOrder.notes || '') !== notes) {
+        changes.push('Notes updated');
+      }
+      
+      // Check product changes
+      const oldProducts = oldOrder.order_items ? oldOrder.order_items.map(p => `${p.product_details}|${p.quantity}|${p.amount}`).sort().join(';') : '';
+      const newProducts = items.map(p => `${p.product_details}|${p.quantity}|${p.amount}`).sort().join(';');
+      if (oldProducts !== newProducts) {
+        changes.push('Products updated');
+      }
+      
+      // Create activity record with detailed description
+      const description = changes.length > 0 ? changes.join(', ') : 'Order details updated';
+      await supabaseClient.from('order_activity').insert({ 
+        order_id: editingOrderId, 
+        activity_type: 'Order Updated', 
+        description: description 
+      });
+      
+      // Refresh activity history if Order Details is currently open
+      if (currentOrderDetailsId === editingOrderId) {
+        setTimeout(() => {
+          fetchOrderActivity(editingOrderId);
+        }, 500);
+      }
+      
       alert("Order Updated Successfully!");
     } else {
       const { data: newOrder, error: insertError } = await supabaseClient.from("orders").insert({ party_name: partyName, order_date: orderDate, notes: notes, status: "New Enquiry" }).select();
