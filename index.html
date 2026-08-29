@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1f2937">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="SKV Orders">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SKV Press Orders</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1f2937">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="SKV Orders">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -330,8 +330,8 @@
           <table id="ordersTable">
             <thead>
               <tr>
-                <th>Party Name</th>
                 <th>Order Date</th>
+                <th>Party Name</th>
                 <th>Status</th>
                 <th>Products</th>
                 <th>Total (₹)</th>
@@ -562,7 +562,15 @@ function clearAllFilters() {
 function renderListView() {
   const tableBody = document.getElementById('ordersTableBody');
   tableBody.innerHTML = '';
-  const displayOrders = currentFilter ? filteredOrdersData.filter(o => (o.status || "New Enquiry") === currentFilter) : filteredOrdersData;
+  let displayOrders = currentFilter ? filteredOrdersData.filter(o => (o.status || "New Enquiry") === currentFilter) : filteredOrdersData;
+  
+  // Sort by date - latest first
+  displayOrders = displayOrders.sort((a, b) => {
+    const dateA = new Date(a.order_date || '1970-01-01');
+    const dateB = new Date(b.order_date || '1970-01-01');
+    return dateB - dateA; // Latest first
+  });
+  
   if (displayOrders.length === 0) {
     tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No orders found</td></tr>';
     return;
@@ -578,7 +586,7 @@ function renderListView() {
       });
     }
     const row = document.createElement('tr');
-    row.innerHTML = `<td>${order.party_name || '-'}</td><td>${order.order_date || '-'}</td><td>${order.status || 'New Enquiry'}</td><td class="multi-line">${productsHtml || '<div>No products</div>'}</td><td>₹${total.toFixed(2)}</td><td><div class="row-actions"><button class="view-btn" onclick="openOrderDetails(${order.id})">View</button><button class="edit-btn" onclick="editOrder(${order.id})">Edit</button><button class="delete-btn" onclick="deleteOrder(${order.id})">Delete</button></div></td>`;
+    row.innerHTML = `<td>${order.order_date || '-'}</td><td>${order.party_name || '-'}</td><td>${order.status || 'New Enquiry'}</td><td class="multi-line">${productsHtml || '<div>No products</div>'}</td><td>₹${total.toFixed(2)}</td><td><div class="row-actions"><button class="view-btn" onclick="openOrderDetails(${order.id})">View</button><button class="edit-btn" onclick="editOrder(${order.id})">Edit</button><button class="delete-btn" onclick="deleteOrder(${order.id})">Delete</button></div></td>`;
     tableBody.appendChild(row);
   });
 }
@@ -1205,7 +1213,7 @@ function shareToWhatsApp() {
   }
   
   // Create simple message
-  const message = `Order Details:\nParty: ${order.party_name || '-'}\nProducts:${productsText || '\nNo products'}\nGrand Total: ₹${total.toFixed(2)}`;
+  const message = `Order Details:\nParty: ${order.party_name || '-'}\nProducts:${productsText || '\nNo products'}\nGrand Total: ₹${total.toFixed(2)}${order.notes ? `\n\nNotes: ${order.notes}` : ''}`;
   
   // Encode message for URL
   const encodedMessage = encodeURIComponent(message);
@@ -1221,32 +1229,32 @@ function shareToWhatsApp() {
   // Open WhatsApp
   window.open(whatsappUrl, '_blank');
 }
-  </script>
-<script>
-  // Service Worker Registration
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').then(reg => {
-        console.log('✅ Service Worker Registered');
-      }).catch(err => {
-        console.log('❌ Service Worker Error:', err);
-      });
+
+// ==================== PWA - Service Worker Registration ====================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      console.log('✅ Service Worker Registered');
+    }).catch(err => {
+      console.log('❌ Service Worker Error:', err);
     });
-  }
-  
-  // Install Prompt
-  let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    console.log('✅ Install prompt ready');
   });
-  
-  // Handle install button click
-  window.addEventListener('appinstalled', () => {
-    console.log('✅ App installed successfully');
-    deferredPrompt = null;
-  });
-</script>
+}
+
+// Install Prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  console.log('✅ Install prompt ready');
+});
+
+// Handle install button click
+window.addEventListener('appinstalled', () => {
+  console.log('✅ App installed successfully');
+  deferredPrompt = null;
+});
+// ==================== End PWA ====================
+  </script>
 </body>
 </html>
