@@ -756,7 +756,15 @@ function renderKanban() {
   if (!board) return;
   board.innerHTML = "";
   PIPELINE_STAGES.forEach(stage => {
-    const ordersInStage = currentFilter ? ordersData.filter(order => (order.status || "New Enquiry") === stage.key && (order.status || "New Enquiry") === currentFilter) : ordersData.filter(order => (order.status || "New Enquiry") === stage.key);
+    let ordersInStage = currentFilter ? ordersData.filter(order => (order.status || "New Enquiry") === stage.key && (order.status || "New Enquiry") === currentFilter) : ordersData.filter(order => (order.status || "New Enquiry") === stage.key);
+    
+    // Sort by date - newest first
+    ordersInStage = ordersInStage.sort((a, b) => {
+      const dateA = new Date(a.order_date || '1970-01-01');
+      const dateB = new Date(b.order_date || '1970-01-01');
+      return dateB - dateA; // Latest first
+    });
+    
     const column = document.createElement("div");
     column.className = "kanban-column" + (stage.special ? " special" : "");
     let cardsHtml = "";
