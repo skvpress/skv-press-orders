@@ -429,7 +429,7 @@ window.addEventListener('load', () => {
 });
 async function loadOrders() {
   try {
-    const { data, error } = await supabaseClient.from("orders").select("*, order_items(*), order_activity(*)");
+    const { data, error } = await supabaseClient.from("orders").select("*, order_items(*)");
     if (error) { console.error(error); return; }
     ordersData = data || [];
     filteredOrdersData = [...ordersData];
@@ -589,56 +589,117 @@ function openOrderDetails(orderId) {
       productsHtml += `<tr><td>${item.product_details || '-'}</td><td>${item.quantity || 0}</td><td>₹${amt.toFixed(2)}</td></tr>`;
     });
   }
-  let activityHtml = '';
-  if (order.order_activity && order.order_activity.length > 0) {
-    activityHtml = '<div class="activity-timeline">';
-    order.order_activity.forEach(activity => {
-      const date = new Date(activity.created_at).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-      let activityClass = 'activity-item';
-      let activityContent = '';
-      if (activity.activity_type === 'Order Created') {
-        activityContent = `<strong>Order Created</strong>`;
-      } else if (activity.activity_type === 'Status Changed') {
-        activityClass += ' activity-status-change';
-        activityContent = `<strong>Status changed:</strong> ${activity.old_status || 'N/A'} → ${activity.new_status || 'N/A'}`;
-      } else if (activity.activity_type === 'Order Updated') {
-        activityContent = `<strong>Order Updated</strong> - ${activity.description || ''}`;
-      } else {
-        activityContent = `<strong>${activity.activity_type}</strong> - ${activity.description || ''}`;
-      }
-      activityHtml += `<div class="${activityClass}"><div class="activity-time">${date}</div><div class="activity-desc">${activityContent}</div></div>`;
-    });
-    activityHtml += '</div>';
-  }
+  
+  // Show modal with loading state first
+  const modal = document.getElementById('orderDetailsModal');
+  modal.classList.add('show');
+  
   const content = `
     <div class="detail-section">
       <div class="detail-row">
-        <div class="detail-field"><div class="detail-label">Party Name</div><div class="detail-value">${order.party_name || '-'}</div></div>
-        <div class="detail-field"><div class="detail-label">Order Date</div><div class="detail-value">${order.order_date || '-'}</div></div>
+        <div><strong>Party Name:</strong> ${order.party_name || '-'}</div>
+        <div><strong>Order Date:</strong> ${order.order_date || '-'}</div>
       </div>
-    </div>
-    <div class="detail-section">
-      <div class="detail-label">Current Status</div>
-      <div class="detail-value" style="font-size: 16px; font-weight: bold; color: #2563eb;">${order.status || 'New Enquiry'}</div>
-    </div>
-    <div class="detail-section">
-      <div class="detail-label">Products</div>
-      <table class="products-table">
-        <thead><tr><th>Product</th><th>Quantity</th><th>Amount</th></tr></thead>
-        <tbody>${productsHtml || '<tr><td colspan="3" style="text-align: center; padding: 20px;">No products</td></tr>'}</tbody>
-      </table>
-    </div>
-    <div class="detail-section">
       <div class="detail-row">
-        <div class="detail-field"><div class="detail-label">Grand Total</div><div class="detail-value" style="font-size: 18px; font-weight: bold; color: #2563eb;">₹${total.toFixed(2)}</div></div>
+        <div><strong>Status:</strong> <span style="color: #2563eb; font-weight: bold;">${order.status || 'New Enquiry'}</span></div>
+      </div>
+      <div class="detail-section">
+        <h3>Products</h3>
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Amount (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${productsHtml || '<tr><td colspan="3">No products</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+      <div class="detail-row">
+        <div><strong>Grand Total:</strong> <span style="color: #2563eb; font-weight: bold; font-size: 18px;">₹${total.toFixed(2)}</span></div>
+      </div>
+      ${order.notes ? `<div class="detail-section"><h3>Notes / Special Instructions</h3><p>${order.notes}</p></div>` : ''}
+      <div class="detail-section">
+        <h3>Activity History</h3>
+        <div id="activityHistoryContainer" style="min-height: 100px; padding: 10px; background: #f9fafb; border-radius: 8px;">
+          <div style="text-align: center; color: #999; padding: 20px;">Loading activity history...</div>
+        </div>
       </div>
     </div>
-    ${order.notes ? `<div class="detail-section"><div class="detail-label">Notes / Instructions</div><div class="notes-box">${order.notes || 'No notes'}</div></div>` : ''}
-    ${activityHtml ? `<div class="detail-section"><div class="detail-label">Activity History</div>${activityHtml}</div>` : ''}
   `;
+  
   document.getElementById('orderDetailsContent').innerHTML = content;
-  document.getElementById('orderDetailsModal').classList.add('show');
+  
+  // Now fetch activity history asynchronously
+  fetchOrderActivity(orderId);
 }
+
+async function fetchOrderActivity(orderId) {
+  try {
+    const { data: activities, error } = await supabaseClient
+      .from('order_activity')
+      .select('*')
+      .eq('order_id', orderId)
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    let activityHtml = '';
+    
+    if (!activities || activities.length === 0) {
+      activityHtml = '<div style="text-align: center; color: #999; padding: 20px;">No activity history yet</div>';
+    } else {
+      activityHtml = '<div class="activity-timeline">';
+      activities.forEach(activity => {
+        const date = new Date(activity.created_at).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        let activityContent = '';
+        let emoji = '📋';
+        
+        if (activity.activity_type === 'Order Created') {
+          emoji = '🆕';
+          activityContent = `<strong>Order Created</strong><br><small>New order created</small>`;
+        } else if (activity.activity_type === 'Status Changed') {
+          emoji = '🔄';
+          activityContent = `<strong>Status Changed</strong><br><small>${activity.old_status || 'N/A'} → ${activity.new_status || 'N/A'}</small>`;
+        } else if (activity.activity_type === 'Order Updated') {
+          emoji = '✏️';
+          activityContent = `<strong>Order Updated</strong><br><small>${activity.description || 'Order details updated'}</small>`;
+        } else {
+          activityContent = `<strong>${activity.activity_type}</strong><br><small>${activity.description || ''}</small>`;
+        }
+        
+        activityHtml += `
+          <div class="activity-item">
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <div style="font-size: 20px; margin-top: 2px;">${emoji}</div>
+              <div style="flex: 1;">
+                <div style="font-size: 12px; color: #999;">${date}</div>
+                <div style="margin-top: 4px;">${activityContent}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      activityHtml += '</div>';
+    }
+    
+    const container = document.getElementById('activityHistoryContainer');
+    if (container) {
+      container.innerHTML = activityHtml;
+    }
+    
+  } catch (error) {
+    console.error('Error fetching activity history:', error);
+    const container = document.getElementById('activityHistoryContainer');
+    if (container) {
+      container.innerHTML = '<div style="text-align: center; color: #d32f2f; padding: 20px;">Error loading activity history</div>';
+    }
+  }
+}
+
 function closeOrderDetails() {
   document.getElementById('orderDetailsModal').classList.remove('show');
   currentOrderDetailsId = null;
