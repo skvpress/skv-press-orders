@@ -424,6 +424,8 @@ function navigateTo(section) {
   if (section === 'pipeline') { renderKanban(); }
   else if (section === 'listview') { clearAllFilters(); renderListView(); }
   else if (section === 'dashboard') { renderDashboard(); }
+  // Save current section to localStorage
+  localStorage.setItem('currentSection', section);
 }
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); }
@@ -432,6 +434,12 @@ window.addEventListener('load', () => {
   addItem();
   loadOrders();
   loadParties();
+  
+  // Restore last viewed section
+  const lastSection = localStorage.getItem('currentSection') || 'dashboard';
+  setTimeout(() => {
+    navigateTo(lastSection);
+  }, 500);
 });
 async function loadOrders() {
   try {
